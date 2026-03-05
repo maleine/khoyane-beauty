@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - NailArt Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script>
+  // Polling badge sidebar (toutes les 20s)
+  async function updateSidebarBadge() {
+    try {
+      const r = await fetch('/admin/api/reservations/nouvelles?since=1970-01-01');
+      const d = await r.json();
+      const badge = document.getElementById('sidebarBadge');
+      if (badge) {
+        if (d.total_attente > 0) { badge.textContent = d.total_attente; badge.style.display = 'inline'; }
+        else { badge.style.display = 'none'; }
+      }
+    } catch(e) {}
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    updateSidebarBadge();
+    setInterval(updateSidebarBadge, 20000);
+  });
+  </script>
+  <style>
+    body { font-family: 'Jost', sans-serif; background: #f8f5f0; }
+    .admin-sidebar { width: 260px; min-height: 100vh; background: #1e1030; position: fixed; left: 0; top: 0; z-index: 1000; }
+    .admin-content { margin-left: 260px; min-height: 100vh; }
+    .sidebar-brand { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-brand-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: #fff; letter-spacing: 3px; font-style: italic; }
+    .sidebar-brand-sub { font-size: 0.6rem; color: #8e6db0; letter-spacing: 5px; display: block; text-transform: uppercase; }
+    .sidebar-nav .nav-link { color: #aaa; padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 10px; transition: all 0.2s; font-size: 0.82rem; letter-spacing: 0.5px; }
+    .sidebar-nav .nav-link:hover, .sidebar-nav .nav-link.active { color: #fff; background: rgba(142,109,176,0.18); border-left: 3px solid #8e6db0; }
+    .sidebar-nav .nav-link i { width: 18px; }
+    .admin-topbar { background: #fff; padding: 1rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .stat-card { background: #fff; border-radius: 8px; padding: 1.25rem; border-left: 4px solid #8e6db0; }
+    .stat-card .stat-val { font-size: 2rem; font-weight: 400; color: #1e1030; font-family: 'Playfair Display', serif; }
+    .stat-card .stat-lbl { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    @media(max-width:768px) { .admin-sidebar{display:none;} .admin-content{margin-left:0;} }
+  </style>
+</head>
+<body>
+
+<!-- Curseur personnalisé admin -->
+<div class="custom-cursor" id="customCursor"></div>
+<div class="custom-cursor-ring" id="customCursorRing"></div>
+<!-- Sidebar -->
+<div class="admin-sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-name">KHOYANE</div>
+    <span class="sidebar-brand-sub">BEAUTY ADMIN</span>
+  </div>
+  <nav class="sidebar-nav mt-3">
+    <a href="/admin" class="nav-link <%= currentPath === '/admin' ? 'active' : '' %>">
+      <i class="bi bi-grid-1x2"></i> Dashboard
+    </a>
+    <a href="/admin/reservations" class="nav-link <%= currentPath.includes('/admin/reservations') ? 'active' : '' %>">
+      <i class="bi bi-calendar-check"></i> Réservations
+      <span id="sidebarBadge" style="margin-left:auto;background:#e74c3c;color:#fff;border-radius:20px;font-size:10px;padding:1px 7px;display:none;"></span>
+    </a>
+    <a href="/admin/commandes" class="nav-link <%= currentPath.includes('/admin/commandes') ? 'active' : '' %>">
+      <i class="bi bi-bag-check"></i> Commandes
+      <span id="sidebarCommandesBadge" style="display:none;margin-left:auto;background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff;border-radius:20px;font-size:10px;padding:1px 7px;">0</span>
+    </a>
+    <a href="/admin/services" class="nav-link <%= currentPath.includes('/admin/services') ? 'active' : '' %>">
+      <i class="bi bi-scissors"></i> Services
+    </a>
+    <a href="/admin/produits" class="nav-link <%= currentPath.includes('/admin/produits') ? 'active' : '' %>">
+      <i class="bi bi-bag"></i> Produits
+    </a>
+    <a href="/admin/articles" class="nav-link <%= currentPath.includes('/admin/articles') ? 'active' : '' %>">
+      <i class="bi bi-journal-text"></i> Articles Blog
+    </a>
+    <a href="/admin/promos" class="nav-link <%= currentPath.includes('/admin/promos') ? 'active' : '' %>">
+      <i class="bi bi-tag-fill"></i> Remises &amp; Promos
+      <span style="background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;letter-spacing:0;">NEW</span>
+    </a>
+    <a href="/admin/notifications" class="nav-link <%= currentPath.includes('/admin/notifications') ? 'active' : '' %>">
+      <i class="bi bi-bell-fill"></i> Notifications
+    </a>
+    <hr class="border-secondary mx-3">
+    <a href="/" class="nav-link"><i class="bi bi-house"></i> Voir le site</a>
+    <a href="/admin/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-left"></i> Déconnexion</a>
+  </nav>
+</div>
+<!-- Content -->
+<div class="admin-content">
+  <div class="admin-topbar">
+    <h6 class="mb-0 fw-semibold"><%= title %></h6>
+    <div class="d-flex align-items-center gap-3">
+
+      <!-- Cloche notifications temps réel -->
+      <div style="position:relative;cursor:pointer;" id="notifBellWrap" onclick="toggleNotifPanel()">
+        <i class="bi bi-bell" id="notifBellIcon" style="font-size:1.2rem;color:#555;transition:color 0.2s;"></i>
+        <span id="notifBadge" style="display:none;position:absolute;top:-5px;right:-5px;background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:bellPulse 1.5s ease-in-out infinite;">0</span>
+      </div>
+
+      <!-- Lien paramètres notifs -->
+      <a href="/admin/notifications" title="Paramètres notifications" style="color:#888;text-decoration:none;">
+        <i class="bi bi-gear" style="font-size:1rem;"></i>
+      </a>
+
+      <div class="admin-avatar d-flex align-items-center gap-2">
+        <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center" style="width:35px;height:35px;font-size:14px">
+          <%= admin ? admin.nom.charAt(0) : 'A' %>
+        </div>
+        <span class="small"><%= admin ? admin.nom : 'Admin' %></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panneau notifications -->
+  <div id="notifPanel" style="display:none;position:fixed;top:70px;right:20px;width:340px;background:#fff;border-radius:12px;box-shadow:0 8px 40px rgba(30,16,48,0.18);z-index:1000;overflow:hidden;animation:slideDownPanel 0.25s cubic-bezier(0.16,1,0.3,1);">
+    <div style="padding:16px 20px;background:linear-gradient(135deg,#1e1030,#6b4880);color:#fff;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;font-weight:600;letter-spacing:1px;">🔔 Nouvelles réservations</span>
+      <button onclick="toggleNotifPanel()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:16px;cursor:pointer;line-height:1;">×</button>
+    </div>
+    <div id="notifList" style="max-height:320px;overflow-y:auto;padding:8px 0;">
+      <div style="padding:24px;text-align:center;color:#aaa;font-size:13px;">
+        <div style="font-size:2rem;margin-bottom:8px;">🎉</div>
+        Aucune nouvelle réservation
+      </div>
+    </div>
+    <div style="padding:12px 20px;border-top:1px solid #f0e6f6;text-align:center;">
+      <a href="/admin/reservations" style="font-size:12px;color:#8e6db0;text-decoration:none;font-weight:600;letter-spacing:1px;">Voir toutes les réservations →</a>
+    </div>
+  </div>
+
+  <style>
+    @keyframes bellPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+    @keyframes bellShake { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-12deg)} 40%{transform:rotate(12deg)} 60%{transform:rotate(-8deg)} 80%{transform:rotate(8deg)} }
+    @keyframes slideDownPanel { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+
+  <script>
+  let lastCheckTime = new Date(Date.now() - 60000).toISOString();
+  let notifPanelOpen = false;
+  let pendingCount = 0;
+
+  function toggleNotifPanel() {
+    notifPanelOpen = !notifPanelOpen;
+    document.getElementById('notifPanel').style.display = notifPanelOpen ? 'block' : 'none';
+    if (notifPanelOpen) {
+      pendingCount = 0;
+      document.getElementById('notifBadge').style.display = 'none';
+    }
+  }
+
+  // Fermer panneau si clic dehors
+  document.addEventListener('click', function(e) {
+    if (notifPanelOpen && !document.getElementById('notifBellWrap').contains(e.target) && !document.getElementById('notifPanel').contains(e.target)) {
+      notifPanelOpen = false;
+      document.getElementById('notifPanel').style.display = 'none';
+    }
+  });
+
+  async function checkNouvellesReservations() {
+    try {
+      const res = await fetch('/admin/api/reservations/nouvelles?since=' + encodeURIComponent(lastCheckTime));
+      const data = await res.json();
+      
+      if (data.nouvelles && data.nouvelles.length > 0) {
+        lastCheckTime = new Date().toISOString();
+        pendingCount += data.nouvelles.length;
+
+        // Mise à jour badge
+        const badge = document.getElementById('notifBadge');
+        badge.textContent = pendingCount > 9 ? '9+' : pendingCount;
+        badge.style.display = 'flex';
+
+        // Animation cloche
+        const bell = document.getElementById('notifBellIcon');
+        bell.style.color = '#d4187f';
+        bell.style.animation = 'bellShake 0.6s ease';
+        setTimeout(() => { bell.style.animation = ''; }, 700);
+
+        // Remplir le panneau
+        const list = document.getElementById('notifList');
+        list.innerHTML = '';
+        data.nouvelles.forEach(r => {
+          const div = document.createElement('div');
+          div.style.cssText = 'padding:12px 20px;border-bottom:1px solid #f9f3fd;transition:background 0.2s;cursor:pointer;';
+          div.onmouseover = () => div.style.background = '#fdf8ff';
+          div.onmouseout = () => div.style.background = '';
+          div.onclick = () => window.location.href = '/admin/reservations';
+          div.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:#1e1030;">${r.prenom} ${r.nom}</div>
+                <div style="font-size:11px;color:#8e6db0;margin-top:2px;">${r.service_nom || 'Service non spécifié'}</div>
+                <div style="font-size:11px;color:#aaa;margin-top:2px;">📅 ${new Date(r.date_rdv).toLocaleDateString('fr-FR')} à ${r.heure_rdv} · 📞 ${r.telephone}</div>
+              </div>
+              <span style="background:#fdf0f5;color:#d4187f;font-size:9px;padding:3px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0;">Nouveau</span>
+            </div>
+          `;
+          list.appendChild(div);
+        });
+
+        // Notification web push (si accordée)
+        if ('Notification' in window && Notification.permission === 'granted') {
+          const r = data.nouvelles[0];
+          new Notification('🔔 Nouvelle réservation — Khoyane Beauty', {
+            body: `${r.prenom} ${r.nom} · ${r.service_nom || ''} · ${r.heure_rdv}`,
+            icon: '/images/nail-01.jpg',
+            tag: 'reservation-' + r.id,
+          });
+        }
+      }
+
+      // Mettre à jour le total en attente dans la stat card
+      if (data.total_attente !== undefined) {
+        const statEl = document.querySelector('[data-stat="attente"]');
+        if (statEl) statEl.textContent = data.total_attente;
+      }
+    } catch(e) {}
+  }
+
+  // Demander permission notifications au chargement
+  if ('Notification' in window && Notification.permission === 'default') {
+    setTimeout(() => Notification.requestPermission(), 2000);
+  }
+
+  // Vérifier toutes les 30 secondes
+  checkNouvellesReservations();
+  setInterval(checkNouvellesReservations, 30000);
+  </script>
+  <div class="p-4">

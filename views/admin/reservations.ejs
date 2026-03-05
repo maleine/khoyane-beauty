@@ -1,0 +1,293 @@
+<%- include('layout-top') %>
+
+<!-- NOTIFICATION TOAST -->
+<div id="notifToast" style="
+  position:fixed; top:80px; right:20px; z-index:9999;
+  display:none; min-width:320px;
+">
+  <div style="background:#1a0a2e; color:#fff; border-radius:8px; padding:1rem 1.25rem; box-shadow:0 8px 30px rgba(0,0,0,0.3);">
+    <div class="d-flex align-items-start gap-3">
+      <div style="background:#9b59b6; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <i class="bi bi-bell-fill text-white"></i>
+      </div>
+      <div>
+        <div style="font-size:12px; letter-spacing:1px; color:#c9a8e0; text-transform:uppercase;">Nouvelle réservation</div>
+        <div id="notifText" style="font-size:14px; margin-top:2px;"></div>
+        <div id="notifDetail" style="font-size:11px; color:#aaa; margin-top:2px;"></div>
+      </div>
+      <button onclick="document.getElementById('notifToast').style.display='none'" style="background:none;border:none;color:#aaa;margin-left:auto;cursor:pointer;font-size:18px;">×</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS RAPIDES -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center" style="border-left-color:#6c5ce7">
+      <div class="stat-val"><%= stats.total %></div>
+      <div class="stat-lbl">Total</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center" style="border-left-color:#fdcb6e; cursor:pointer;" onclick="filterByStatut('en_attente')">
+      <div class="stat-val text-warning"><%= stats.attente %></div>
+      <div class="stat-lbl">En attente</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center" style="border-left-color:#00b894; cursor:pointer;" onclick="filterByStatut('confirme')">
+      <div class="stat-val text-success"><%= stats.confirme %></div>
+      <div class="stat-lbl">Confirmées</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center" style="border-left-color:#d63031; cursor:pointer;" onclick="filterByStatut('annule')">
+      <div class="stat-val text-danger"><%= stats.annule %></div>
+      <div class="stat-lbl">Annulées</div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTRES -->
+<div class="bg-white rounded-3 p-3 mb-4">
+  <form method="GET" action="/admin/reservations" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888">Recherche</label>
+      <input type="text" name="search" class="form-control form-control-sm" placeholder="Nom, email, téléphone..." value="<%= filters.search %>">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888">Statut</label>
+      <select name="statut" class="form-select form-select-sm">
+        <option value="tous" <%= filters.statut === 'tous' ? 'selected' : '' %>>Tous les statuts</option>
+        <option value="en_attente" <%= filters.statut === 'en_attente' ? 'selected' : '' %>>En attente</option>
+        <option value="confirme" <%= filters.statut === 'confirme' ? 'selected' : '' %>>Confirmées</option>
+        <option value="annule" <%= filters.statut === 'annule' ? 'selected' : '' %>>Annulées</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888">Date RDV</label>
+      <input type="date" name="date" class="form-control form-control-sm" value="<%= filters.date %>">
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-sm btn-dark flex-grow-1" style="border-radius:0;letter-spacing:1px;font-size:11px;">Filtrer</button>
+      <a href="/admin/reservations" class="btn btn-sm btn-outline-secondary" style="border-radius:0">✕</a>
+    </div>
+  </form>
+</div>
+
+<!-- TABLEAU DES RÉSERVATIONS -->
+<div class="bg-white rounded-3 p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h6 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;">
+      Réservations
+      <% if (filters.statut !== 'tous' || filters.search || filters.date) { %>
+        <small class="text-muted ms-2" style="font-size:12px;font-style:normal;">— filtrées</small>
+      <% } %>
+    </h6>
+    <div class="d-flex align-items-center gap-2">
+      <span id="liveIndicator" style="display:flex;align-items:center;gap:6px;font-size:11px;color:#00b894;letter-spacing:1px;">
+        <span style="width:8px;height:8px;background:#00b894;border-radius:50%;animation:pulse 2s infinite;"></span>
+        LIVE
+      </span>
+    </div>
+  </div>
+
+  <% if (reservations && reservations.length > 0) { %>
+  <div class="table-responsive">
+    <table class="table align-middle" style="font-size:13px;" id="reservTable">
+      <thead>
+        <tr style="border-bottom:2px solid #f0e6f6;">
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">#</th>
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Client</th>
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Contact</th>
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Service</th>
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">RDV</th>
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Message</th>
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Statut</th>
+          <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% reservations.forEach(function(r) { %>
+        <tr id="row-<%= r.id %>" style="border-bottom:1px solid #f9f3fd; transition:background 0.2s;"
+            onmouseover="this.style.background='#fdf8ff'" onmouseout="this.style.background=''">
+          <td><small class="text-muted">#<%= r.id %></small></td>
+          <td>
+            <div style="font-weight:600;color:#1a0a2e;"><%= r.prenom %> <%= r.nom %></div>
+            <small class="text-muted" style="font-size:11px;"><%= new Date(r.created_at).toLocaleDateString('fr-FR') %></small>
+          </td>
+          <td>
+            <a href="tel:<%= r.telephone %>" style="color:#9b59b6;text-decoration:none;font-size:12px;">
+              <i class="bi bi-telephone me-1"></i><%= r.telephone %>
+            </a>
+            <div style="font-size:11px;color:#888;"><%= r.email %></div>
+          </td>
+          <td>
+            <span style="background:#f3e5f5;color:#9b59b6;font-size:10px;letter-spacing:1px;padding:3px 10px;border-radius:20px;">
+              <%= r.service_nom || 'Non spécifié' %>
+            </span>
+          </td>
+          <td>
+            <div style="font-weight:500;font-size:12px;"><i class="bi bi-calendar3 me-1 text-muted"></i><%= new Date(r.date_rdv).toLocaleDateString('fr-FR') %></div>
+            <div style="font-size:11px;color:#9b59b6;"><i class="bi bi-clock me-1"></i><%= r.heure_rdv %></div>
+          </td>
+          <td style="max-width:140px;">
+            <% if (r.message) { %>
+            <small class="text-muted" style="font-style:italic;" title="<%= r.message %>">
+              "<%= r.message.substring(0, 35) %><%= r.message.length > 35 ? '…' : '' %>"
+            </small>
+            <% } else { %>
+            <small class="text-muted">—</small>
+            <% } %>
+          </td>
+          <td id="statut-<%= r.id %>">
+            <% if (r.statut === 'confirme') { %>
+              <span class="badge" style="background:#d4edda;color:#155724;font-size:10px;letter-spacing:1px;padding:5px 10px;border-radius:20px;">✓ Confirmé</span>
+            <% } else if (r.statut === 'annule') { %>
+              <span class="badge" style="background:#f8d7da;color:#721c24;font-size:10px;letter-spacing:1px;padding:5px 10px;border-radius:20px;">✗ Annulé</span>
+            <% } else { %>
+              <span class="badge" style="background:#fff3cd;color:#856404;font-size:10px;letter-spacing:1px;padding:5px 10px;border-radius:20px;">⏳ En attente</span>
+            <% } %>
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <button onclick="changerStatut(<%= r.id %>, 'confirme')"
+                class="btn btn-sm" title="Confirmer"
+                style="background:#00b894;color:#fff;border:none;border-radius:50%;width:30px;height:30px;padding:0;font-size:12px;">
+                <i class="bi bi-check-lg"></i>
+              </button>
+              <button onclick="changerStatut(<%= r.id %>, 'annule')"
+                class="btn btn-sm" title="Annuler"
+                style="background:#d63031;color:#fff;border:none;border-radius:50%;width:30px;height:30px;padding:0;font-size:12px;">
+                <i class="bi bi-x-lg"></i>
+              </button>
+              <form action="/admin/reservations/<%= r.id %>/delete" method="POST" class="d-inline"
+                onsubmit="return confirm('Supprimer cette réservation ?')">
+                <button type="submit" class="btn btn-sm" title="Supprimer"
+                  style="background:#f0f0f0;color:#666;border:none;border-radius:50%;width:30px;height:30px;padding:0;font-size:12px;">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } else { %>
+  <div class="text-center py-5">
+    <div style="font-size:3rem;margin-bottom:1rem;">📋</div>
+    <p class="text-muted" style="font-size:14px;">Aucune réservation trouvée.</p>
+    <% if (filters.statut !== 'tous' || filters.search || filters.date) { %>
+    <a href="/admin/reservations" class="btn btn-sm btn-outline-dark" style="border-radius:0;letter-spacing:1px;font-size:11px;">Voir toutes</a>
+    <% } %>
+  </div>
+  <% } %>
+</div>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+@keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+#notifToast { animation: slideIn 0.3s ease; }
+</style>
+
+<script>
+let lastCheck = new Date().toISOString();
+let notifQueue = [];
+
+// Polling toutes les 15 secondes
+setInterval(async () => {
+  try {
+    const r = await fetch('/admin/api/reservations/nouvelles?since=' + encodeURIComponent(lastCheck));
+    const data = await r.json();
+    if (data.nouvelles && data.nouvelles.length > 0) {
+      data.nouvelles.forEach(n => {
+        afficherNotification(n);
+        ajouterLigneTable(n);
+      });
+      // Mettre à jour badge En attente dans le sidebar
+      updateStatut();
+    }
+    lastCheck = new Date().toISOString();
+  } catch(e) { /* silencieux */ }
+}, 15000);
+
+function afficherNotification(n) {
+  const toast = document.getElementById('notifToast');
+  document.getElementById('notifText').textContent = n.prenom + ' ' + n.nom;
+  document.getElementById('notifDetail').textContent =
+    (n.service_nom || 'Service non spécifié') + ' · ' +
+    new Date(n.date_rdv).toLocaleDateString('fr-FR') + ' à ' + n.heure_rdv;
+  toast.style.display = 'block';
+  // Auto-fermeture 6s
+  setTimeout(() => { toast.style.display = 'none'; }, 6000);
+  // Son de notification navigateur
+  if (window.Notification && Notification.permission === 'granted') {
+    new Notification('🌸 Nouvelle réservation', {
+      body: n.prenom + ' ' + n.nom + ' — ' + (n.service_nom || ''),
+      icon: '/images/hero-main.jpg'
+    });
+  }
+}
+
+// Demander permission notifications navigateur
+if (window.Notification && Notification.permission === 'default') {
+  Notification.requestPermission();
+}
+
+function changerStatut(id, statut) {
+  fetch('/admin/api/reservations/' + id + '/statut', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ statut })
+  }).then(r => r.json()).then(data => {
+    if (data.success) {
+      const cell = document.getElementById('statut-' + id);
+      if (statut === 'confirme') {
+        cell.innerHTML = '<span class="badge" style="background:#d4edda;color:#155724;font-size:10px;letter-spacing:1px;padding:5px 10px;border-radius:20px;">✓ Confirmé</span>';
+        // Afficher toast avec lien WhatsApp pour notifier le client
+        if (data.client && data.waLink) {
+          showWaNotif(data.client, data.waLink);
+        }
+      } else if (statut === 'annule') {
+        cell.innerHTML = '<span class="badge" style="background:#f8d7da;color:#721c24;font-size:10px;letter-spacing:1px;padding:5px 10px;border-radius:20px;">✗ Annulé</span>';
+      }
+    }
+  });
+}
+
+function showWaNotif(client, waLink) {
+  // Créer toast WhatsApp
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:#1a0a2e;color:#fff;border-radius:10px;padding:1.2rem 1.5rem;box-shadow:0 10px 40px rgba(0,0,0,0.3);max-width:320px;animation:slideIn 0.3s ease;';
+  toast.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="background:#25D366;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">📱</div>
+      <div>
+        <div style="font-size:11px;letter-spacing:1px;color:#c9a8e0;text-transform:uppercase;margin-bottom:4px;">Notifier le client</div>
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px;">${client.prenom} ${client.nom}</div>
+        <div style="font-size:11px;color:#aaa;margin-bottom:12px;">${client.telephone}</div>
+        <a href="${waLink}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;padding:7px 16px;border-radius:20px;text-decoration:none;font-size:12px;font-weight:500;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Envoyer sur WhatsApp
+        </a>
+      </div>
+      <button onclick="this.closest('div[style]').remove()" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:18px;margin-left:auto;">×</button>
+    </div>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 15000);
+}
+
+function filterByStatut(statut) {
+  window.location = '/admin/reservations?statut=' + statut;
+}
+
+function ajouterLigneTable(n) {
+  // Recharge la page pour montrer la nouvelle réservation
+  setTimeout(() => location.reload(), 1000);
+}
+</script>
+
+<%- include('layout-bottom') %>

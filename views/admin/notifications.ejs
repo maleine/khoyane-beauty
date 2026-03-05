@@ -1,0 +1,141 @@
+<%- include('layout-top') %>
+
+<!-- Header -->
+<div style="background:linear-gradient(135deg,#1a0a2e,#7b2d8b);color:#fff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(233,30,140,0.15);"></div>
+  <div style="position:relative;z-index:1;">
+    <div style="font-size:10px;letter-spacing:4px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Khoyane Beauty</div>
+    <h5 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;margin:0;">🔔 Notifications</h5>
+    <p style="font-size:12px;color:rgba(255,255,255,0.6);margin:8px 0 0;">Alertes en temps réel — Web Push uniquement</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+
+    <!-- Notification navigateur -->
+    <div class="bg-white rounded-3 p-4 mb-4">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
+        <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#e91e8c,#9b59b6);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🔔</div>
+        <div>
+          <h6 style="font-family:'Playfair Display',serif;font-style:italic;margin:0;font-size:1rem;">Notifications navigateur</h6>
+          <div style="font-size:11px;color:#aaa;">Alertes pop-up instantanées dans votre navigateur</div>
+        </div>
+        <div style="margin-left:auto;">
+          <span id="pushStatus" style="font-size:10px;padding:4px 10px;border-radius:10px;font-weight:600;">Vérification…</span>
+        </div>
+      </div>
+
+      <div id="pushGranted" style="display:none;">
+        <div style="background:#d4edda;border-radius:8px;padding:12px 16px;font-size:13px;color:#155724;margin-bottom:12px;">
+          ✅ Notifications activées ! Vous serez alertée dès qu'une réservation ou commande arrive.
+        </div>
+        <button onclick="testPush()" class="btn" style="background:#d4edda;color:#28a745;border:none;border-radius:8px;font-size:11px;letter-spacing:1px;padding:10px 20px;">
+          🔔 Tester la notification
+        </button>
+      </div>
+
+      <div id="pushDenied" style="display:none;">
+        <div style="background:#f8d7da;border-radius:8px;padding:12px 16px;font-size:13px;color:#721c24;">
+          ❌ Notifications bloquées. Cliquez sur le cadenas dans la barre d'adresse et autorisez-les pour ce site.
+        </div>
+      </div>
+
+      <div id="pushDefault" style="display:none;">
+        <div style="font-size:13px;color:#666;margin-bottom:14px;line-height:1.6;">
+          Activez les notifications pour recevoir des alertes instantanées dans votre navigateur — même si l'onglet est en arrière-plan.
+        </div>
+        <button onclick="askPermission()"
+          style="background:linear-gradient(135deg,#1a0a2e,#7b2d8b);color:#fff;border:none;
+          border-radius:8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+          padding:12px 28px;cursor:pointer;transition:all 0.2s;"
+          onmouseover="this.style.transform='translateY(-1px)'"
+          onmouseout="this.style.transform=''">
+          🔔 Activer les notifications
+        </button>
+      </div>
+    </div>
+
+    <!-- Cloche tableau de bord -->
+    <div class="bg-white rounded-3 p-4">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;">
+        <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#1a0a2e,#7b2d8b);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📊</div>
+        <div>
+          <h6 style="font-family:'Playfair Display',serif;font-style:italic;margin:0;font-size:1rem;">Cloche du tableau de bord</h6>
+          <div style="font-size:11px;color:#aaa;">Vérification automatique toutes les 30 secondes</div>
+        </div>
+        <div style="margin-left:auto;">
+          <span style="background:#d4edda;color:#28a745;font-size:10px;padding:4px 10px;border-radius:10px;font-weight:600;">● Toujours actif</span>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#666;line-height:1.7;">
+        La cloche <i class="bi bi-bell" style="color:#9b59b6;"></i> en haut à droite affiche en temps réel toutes les nouvelles réservations et commandes en attente — sans avoir à recharger la page.
+      </div>
+    </div>
+  </div>
+
+  <!-- Statut système -->
+  <div class="col-lg-5">
+    <div class="bg-white rounded-3 p-4">
+      <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;margin-bottom:1rem;">📊 Statut du système</h6>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f9f9f9;border-radius:8px;">
+          <span style="font-size:12px;color:#555;">🔔 Cloche dashboard (30s)</span>
+          <span style="font-size:11px;font-weight:600;color:#28a745;">✓ Actif</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f9f9f9;border-radius:8px;">
+          <span style="font-size:12px;color:#555;">💻 Notification navigateur</span>
+          <span id="pushStatusSmall" style="font-size:11px;font-weight:600;">…</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f9f9f9;border-radius:8px;">
+          <span style="font-size:12px;color:#555;">🛒 Alertes nouvelles commandes</span>
+          <span style="font-size:11px;font-weight:600;color:#28a745;">✓ Actif</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f9f9f9;border-radius:8px;">
+          <span style="font-size:12px;color:#555;">📅 Alertes nouvelles réservations</span>
+          <span style="font-size:11px;font-weight:600;color:#28a745;">✓ Actif</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updatePushStatus() {
+  if (!('Notification' in window)) {
+    document.getElementById('pushStatus').textContent = 'Non supporté';
+    document.getElementById('pushStatus').style.cssText = 'font-size:10px;padding:4px 10px;border-radius:10px;font-weight:600;background:#eee;color:#999;';
+    document.getElementById('pushStatusSmall').textContent = '✗ Non supporté'; document.getElementById('pushStatusSmall').style.color = '#aaa';
+    return;
+  }
+  const perm = Notification.permission;
+  const st = document.getElementById('pushStatus');
+  const ss = document.getElementById('pushStatusSmall');
+  if (perm === 'granted') {
+    st.textContent = '● Activé'; st.style.cssText = 'font-size:10px;padding:4px 10px;border-radius:10px;font-weight:600;background:#d4edda;color:#28a745;';
+    ss.textContent = '✓ Activé'; ss.style.color = '#28a745';
+    document.getElementById('pushGranted').style.display = ''; document.getElementById('pushDenied').style.display = 'none'; document.getElementById('pushDefault').style.display = 'none';
+  } else if (perm === 'denied') {
+    st.textContent = '✗ Bloqué'; st.style.cssText = 'font-size:10px;padding:4px 10px;border-radius:10px;font-weight:600;background:#f8d7da;color:#dc3545;';
+    ss.textContent = '✗ Bloqué'; ss.style.color = '#dc3545';
+    document.getElementById('pushDenied').style.display = ''; document.getElementById('pushGranted').style.display = 'none'; document.getElementById('pushDefault').style.display = 'none';
+  } else {
+    st.textContent = '○ Non activé'; st.style.cssText = 'font-size:10px;padding:4px 10px;border-radius:10px;font-weight:600;background:#fff3cd;color:#e67e22;';
+    ss.textContent = '○ Non activé'; ss.style.color = '#e67e22';
+    document.getElementById('pushDefault').style.display = ''; document.getElementById('pushGranted').style.display = 'none'; document.getElementById('pushDenied').style.display = 'none';
+  }
+}
+async function askPermission() {
+  await Notification.requestPermission();
+  updatePushStatus();
+  if (Notification.permission === 'granted')
+    new Notification('✅ Khoyane Beauty', { body: 'Notifications activées ! Vous serez alertée à chaque réservation ou commande.', icon: '/images/nail-01.jpg' });
+}
+function testPush() {
+  if (Notification.permission === 'granted')
+    new Notification('🔔 Test — Khoyane Beauty', { body: 'Aminata Sow · Pose Américaine · 14h30 · +221 78 247 81 47', icon: '/images/nail-01.jpg', tag: 'test' });
+}
+updatePushStatus();
+</script>
+
+<%- include('layout-bottom') %>

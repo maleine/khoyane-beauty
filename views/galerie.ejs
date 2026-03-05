@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <img src="/images/nail-_08_.jpg" alt="Galerie" class="page-hero-bg" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+  <div class="page-hero-content text-center">
+    <p class="section-pre gold">nos créations</p>
+    <h1 class="page-hero-title">GALERIE</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center">
+        <li class="breadcrumb-item"><a href="/" class="text-white">Accueil</a></li>
+        <li class="breadcrumb-item active text-white-50">Galerie</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <!-- Filtres -->
+    <div class="gallery-filters mb-4 text-center">
+      <button class="filter-btn active" data-filter="all">Tous</button>
+      <button class="filter-btn" data-filter="Manicure">Manucure</button>
+      <button class="filter-btn" data-filter="Gel">Gel</button>
+      <button class="filter-btn" data-filter="Art">Nail Art</button>
+      <button class="filter-btn" data-filter="Soins">Soins</button>
+    </div>
+
+    <div class="row g-3" id="gallery-grid">
+      <% images.forEach(function(img) { %>
+      <div class="col-6 col-md-4 col-lg-3 gallery-item" data-cat="<%= img.categorie || 'Art' %>">
+        <div class="gallery-thumb-wrap">
+          <img src="/images/<%= img.image %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= img.titre || 'Nail Art' %>" class="img-fluid gallery-thumb" loading="lazy">
+          <div class="gallery-thumb-overlay">
+            <i class="bi bi-zoom-in fs-3"></i>
+            <p class="mt-1 mb-0 fw-bold"><%= img.titre || 'Nail Art' %></p>
+            <small><%= img.categorie || '' %></small>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div class="modal fade" id="lightboxModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark border-0">
+      <div class="modal-header border-0">
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-0">
+        <img id="lightboxImg" src="" alt="" class="img-fluid" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Filter gallery
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        item.style.display = (filter === 'all' || item.dataset.cat === filter) ? 'block' : 'none';
+      });
+    });
+  });
+  // Lightbox
+  document.querySelectorAll('.gallery-thumb-wrap').forEach(wrap => {
+    wrap.addEventListener('click', function() {
+      const img = this.querySelector('img');
+      document.getElementById('lightboxImg').src = img.src;
+      new bootstrap.Modal(document.getElementById('lightboxModal')).show();
+    });
+  });
+</script>
+
+<%- include('partials/footer') %>

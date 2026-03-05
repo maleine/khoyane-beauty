@@ -1,0 +1,171 @@
+<%- include('partials/header') %>
+
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <img src="/images/nail-_12_.jpg" alt="Services" class="page-hero-bg" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+  <div class="page-hero-content text-center">
+    <p class="section-pre gold">notre expertise</p>
+    <h1 class="page-hero-title">NOS SERVICES</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center">
+        <li class="breadcrumb-item"><a href="/" class="text-white">Accueil</a></li>
+        <li class="breadcrumb-item active text-white-50">Services</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- MANICURE -->
+<section class="py-5" id="manicure">
+  <div class="container">
+    <div class="row mb-4 align-items-center">
+      <div class="col"><h2 class="section-title">MANUCURE</h2></div>
+      <div class="col-auto"><span class="service-cat-badge">Mains</span></div>
+    </div>
+    <div class="row g-4">
+      <% if (manicure && manicure.length > 0) { %>
+        <% manicure.forEach(function(s) { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card h-100">
+            <div class="service-card-img-wrap">
+              <img src="/images/<%= s.image || 'nail-01.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= s.nom %>" class="service-card-img">
+            </div>
+            <div class="service-card-body p-3">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5 class="service-card-title"><%= s.nom %></h5>
+                <% if (s.remise_type && s.remise_type !== 'none' && s.remise_valeur > 0) { const pf = s.remise_type === 'pourcentage' ? s.prix * (1 - s.remise_valeur/100) : s.prix - s.remise_valeur; %><div class="text-end"><span class="prix-original" style="font-size:11px;color:#aaa;text-decoration:line-through;"><%= Number(s.prix).toLocaleString('fr-FR') %></span><br><span class="service-price prix-remise"><%= Number(pf).toLocaleString('fr-FR') %> FCFA</span><br><span class="remise-badge" style="font-size:9px;">-<%= s.remise_type === 'pourcentage' ? s.remise_valeur + '%' : Number(s.remise_valeur).toLocaleString('fr-FR') + ' F' %></span></div><% } else { %><span class="service-price"><%= Number(s.prix).toLocaleString('fr-FR') %> FCFA</span><% } %>
+              </div>
+              <p class="service-card-desc"><%= s.description %></p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted"><i class="bi bi-clock me-1"></i><%= s.duree %> min</small>
+                <a href="/reservation?service=<%= s.id %>" class="btn btn-sm btn-book-sm">Réserver</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12"><p class="text-muted">Services bientôt disponibles.</p></div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- PEDICURE -->
+<section class="py-5 bg-light" id="pedicure">
+  <div class="container">
+    <div class="row mb-4 align-items-center">
+      <div class="col"><h2 class="section-title">PÉDICURE</h2></div>
+      <div class="col-auto"><span class="service-cat-badge">Pieds</span></div>
+    </div>
+    <div class="row g-4">
+      <% if (pedicure && pedicure.length > 0) { %>
+        <% pedicure.forEach(function(s) { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card h-100">
+            <div class="service-card-img-wrap">
+              <img src="/images/<%= s.image || 'nail-12.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= s.nom %>" class="service-card-img">
+            </div>
+            <div class="service-card-body p-3">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5 class="service-card-title"><%= s.nom %></h5>
+                <% if (s.remise_type && s.remise_type !== 'none' && s.remise_valeur > 0) { const pf = s.remise_type === 'pourcentage' ? s.prix * (1 - s.remise_valeur/100) : s.prix - s.remise_valeur; %><div class="text-end"><span class="prix-original" style="font-size:11px;color:#aaa;text-decoration:line-through;"><%= Number(s.prix).toLocaleString('fr-FR') %></span><br><span class="service-price prix-remise"><%= Number(pf).toLocaleString('fr-FR') %> FCFA</span><br><span class="remise-badge" style="font-size:9px;">-<%= s.remise_type === 'pourcentage' ? s.remise_valeur + '%' : Number(s.remise_valeur).toLocaleString('fr-FR') + ' F' %></span></div><% } else { %><span class="service-price"><%= Number(s.prix).toLocaleString('fr-FR') %> FCFA</span><% } %>
+              </div>
+              <p class="service-card-desc"><%= s.description %></p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted"><i class="bi bi-clock me-1"></i><%= s.duree %> min</small>
+                <a href="/reservation?service=<%= s.id %>" class="btn btn-sm btn-book-sm">Réserver</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12"><p class="text-muted">Services bientôt disponibles.</p></div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- NAIL CARE -->
+<section class="py-5" id="nailcare">
+  <div class="container">
+    <div class="row mb-4 align-items-center">
+      <div class="col"><h2 class="section-title">SOIN DES ONGLES</h2></div>
+      <div class="col-auto"><span class="service-cat-badge">Soins</span></div>
+    </div>
+    <div class="row g-4">
+      <% if (nailcare && nailcare.length > 0) { %>
+        <% nailcare.forEach(function(s) { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card h-100">
+            <div class="service-card-img-wrap">
+              <img src="/images/<%= s.image || 'nail-20.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= s.nom %>" class="service-card-img">
+            </div>
+            <div class="service-card-body p-3">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5 class="service-card-title"><%= s.nom %></h5>
+                <% if (s.remise_type && s.remise_type !== 'none' && s.remise_valeur > 0) { const pf = s.remise_type === 'pourcentage' ? s.prix * (1 - s.remise_valeur/100) : s.prix - s.remise_valeur; %><div class="text-end"><span class="prix-original" style="font-size:11px;color:#aaa;text-decoration:line-through;"><%= Number(s.prix).toLocaleString('fr-FR') %></span><br><span class="service-price prix-remise"><%= Number(pf).toLocaleString('fr-FR') %> FCFA</span><br><span class="remise-badge" style="font-size:9px;">-<%= s.remise_type === 'pourcentage' ? s.remise_valeur + '%' : Number(s.remise_valeur).toLocaleString('fr-FR') + ' F' %></span></div><% } else { %><span class="service-price"><%= Number(s.prix).toLocaleString('fr-FR') %> FCFA</span><% } %>
+              </div>
+              <p class="service-card-desc"><%= s.description %></p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted"><i class="bi bi-clock me-1"></i><%= s.duree %> min</small>
+                <a href="/reservation?service=<%= s.id %>" class="btn btn-sm btn-book-sm">Réserver</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12"><p class="text-muted">Services bientôt disponibles.</p></div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- COSMETICS -->
+<section class="py-5 bg-light" id="cosmetics">
+  <div class="container">
+    <div class="row mb-4 align-items-center">
+      <div class="col"><h2 class="section-title">COSMÉTIQUES</h2></div>
+      <div class="col-auto"><span class="service-cat-badge">Premium</span></div>
+    </div>
+    <div class="row g-4">
+      <% if (cosmetics && cosmetics.length > 0) { %>
+        <% cosmetics.forEach(function(s) { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card h-100">
+            <div class="service-card-img-wrap">
+              <img src="/images/<%= s.image || 'nail-30.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= s.nom %>" class="service-card-img">
+            </div>
+            <div class="service-card-body p-3">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5 class="service-card-title"><%= s.nom %></h5>
+                <% if (s.remise_type && s.remise_type !== 'none' && s.remise_valeur > 0) { const pf = s.remise_type === 'pourcentage' ? s.prix * (1 - s.remise_valeur/100) : s.prix - s.remise_valeur; %><div class="text-end"><span class="prix-original" style="font-size:11px;color:#aaa;text-decoration:line-through;"><%= Number(s.prix).toLocaleString('fr-FR') %></span><br><span class="service-price prix-remise"><%= Number(pf).toLocaleString('fr-FR') %> FCFA</span><br><span class="remise-badge" style="font-size:9px;">-<%= s.remise_type === 'pourcentage' ? s.remise_valeur + '%' : Number(s.remise_valeur).toLocaleString('fr-FR') + ' F' %></span></div><% } else { %><span class="service-price"><%= Number(s.prix).toLocaleString('fr-FR') %> FCFA</span><% } %>
+              </div>
+              <p class="service-card-desc"><%= s.description %></p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted"><i class="bi bi-clock me-1"></i><%= s.duree %> min</small>
+                <a href="/reservation?service=<%= s.id %>" class="btn btn-sm btn-book-sm">Réserver</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12"><p class="text-muted">Services bientôt disponibles.</p></div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Reservation -->
+<section class="cta-banner py-5">
+  <div class="container text-center">
+    <h3 class="text-white mb-3">Prête à sublimer vos ongles ?</h3>
+    <a href="/reservation" class="btn btn-light btn-lg">Prendre rendez-vous →</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

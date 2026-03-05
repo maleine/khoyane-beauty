@@ -1,0 +1,82 @@
+<%- include('layout-top') %>
+
+<% if (success) { %>
+<div class="alert mb-4" style="background:#d4edda;border-left:4px solid #28a745;border-radius:4px;padding:12px 16px;font-size:13px;color:#155724;">✓ <%= success %></div>
+<% } %>
+
+<!-- Header -->
+<div style="background:linear-gradient(135deg,#1a0a2e,#7b2d8b);color:#fff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(233,30,140,0.15);"></div>
+  <div style="position:relative;z-index:1;">
+    <div style="font-size:10px;letter-spacing:4px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Khoyane Beauty</div>
+    <h5 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;margin:0;">🛒 Commandes Produits</h5>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-val"><%= stats.total || 0 %></div>
+      <div class="stat-lbl">Total commandes</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="border-left-color:#e74c3c;">
+      <div class="stat-val"><%= stats.attente || 0 %></div>
+      <div class="stat-lbl">En attente</div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-white rounded-3 p-4">
+  <h6 class="fw-bold mb-3">Liste des commandes</h6>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#Numéro</th><th>Client</th><th>Téléphone</th>
+          <th>Paiement</th><th>Total</th><th>Statut</th><th>Date</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (commandes && commandes.length > 0) { %>
+          <% const payIcons = {especes:'💵',wave:'📲',orange_money:'🟠',virement:'🏦'}; %>
+          <% const statutColors = {en_attente:'#e74c3c',confirmee:'#3498db',payee:'#27ae60',livree:'#2ecc71',annulee:'#95a5a6'}; %>
+          <% commandes.forEach(function(c) { %>
+          <tr>
+            <td><code style="font-size:11px;color:#9b59b6;font-weight:700;"><%= c.numero %></code></td>
+            <td><strong><%= c.prenom %> <%= c.nom %></strong><% if(c.email){ %><br><small class="text-muted"><%= c.email %></small><% } %></td>
+            <td><a href="tel:<%= c.telephone %>" style="color:#9b59b6;text-decoration:none;font-size:12px;"><%= c.telephone %></a></td>
+            <td><span style="font-size:16px;margin-right:4px;"><%= payIcons[c.mode_paiement]||'💳' %></span><small><%= c.mode_paiement.replace('_',' ') %></small></td>
+            <td><strong style="color:#1a0a2e;"><%= Number(c.montant_total).toLocaleString('fr-FR') %> F</strong></td>
+            <td>
+              <form method="POST" action="/admin/commandes/<%= c.id %>/statut" style="display:inline;">
+                <select name="statut" onchange="this.form.submit()"
+                  style="border:none;border-radius:12px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;
+                  background:<%= statutColors[c.statut]||'#aaa' %>20;color:<%= statutColors[c.statut]||'#aaa' %>;">
+                  <% ['en_attente','confirmee','payee','livree','annulee'].forEach(s => { %>
+                  <option value="<%= s %>" <%= c.statut===s?'selected':'' %>>
+                    <%= s.replace('_',' ').replace(/^\w/, ch=>ch.toUpperCase()) %>
+                  </option>
+                  <% }) %>
+                </select>
+              </form>
+            </td>
+            <td><small class="text-muted"><%= new Date(c.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) %></small></td>
+            <td>
+              <a href="https://wa.me/<%= c.telephone.replace(/[^0-9]/g,'') %>" target="_blank"
+                class="btn btn-sm" style="background:#25D366;color:#fff;border:none;font-size:11px;border-radius:6px;">
+                <i class="bi bi-whatsapp"></i>
+              </a>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+        <tr><td colspan="8" class="text-center py-4 text-muted">Aucune commande pour le moment.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('layout-bottom') %>

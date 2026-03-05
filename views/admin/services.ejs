@@ -1,0 +1,302 @@
+<%- include('layout-top') %>
+
+<% if (success) { %>
+<div class="alert mb-4" style="background:#d4edda;border-left:4px solid #28a745;border-radius:4px;padding:12px 16px;font-size:13px;color:#155724;">
+  ✓ <%= success %>
+</div>
+<% } %>
+<% if (error) { %>
+<div class="alert mb-4" style="background:#f8d7da;border-left:4px solid #dc3545;border-radius:4px;padding:12px 16px;font-size:13px;color:#721c24;">
+  ⚠ <%= error %>
+</div>
+<% } %>
+
+<div class="row g-4">
+
+  <!-- ═══ FORMULAIRE AJOUT ═══ -->
+  <div class="col-lg-4">
+    <div class="bg-white rounded-3 p-4" style="position:sticky;top:80px;">
+      <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;margin-bottom:1.5rem;">
+        Ajouter un service
+      </h6>
+
+      <form action="/admin/services" method="POST" enctype="multipart/form-data">
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Nom du service *</label>
+          <input type="text" name="nom" class="form-control" required placeholder="ex: Pose Américaine">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Description</label>
+          <textarea name="description" class="form-control" rows="2" placeholder="Courte description du service..."></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Prix (FCFA) *</label>
+          <input type="number" name="prix" class="form-control" step="0.01" required placeholder="ex: 10000">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Catégorie *</label>
+          <select name="categorie" class="form-select" required>
+            <option value="manicure">Manucure</option>
+            <option value="pedicure">Pédicure</option>
+            <option value="nail_care">Soin Ongles</option>
+            <option value="cosmetics">Cosmétiques</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Image du service</label>
+
+          <!-- Zone upload drag & drop -->
+          <div id="dropZone" onclick="document.getElementById('imageUpload').click()"
+            style="border:2px dashed #e0d0ee;border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fdf9ff;">
+            <div id="dropContent">
+              <div style="font-size:2rem;margin-bottom:8px;">🖼️</div>
+              <div style="font-size:12px;color:#8e6db0;font-weight:500;">Cliquez ou glissez une image</div>
+              <div style="font-size:10px;color:#aaa;margin-top:4px;">JPG, PNG, WEBP · Max 5MB</div>
+            </div>
+            <img id="previewImg" src="" alt="" style="display:none;max-height:120px;border-radius:6px;object-fit:cover;" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+          </div>
+          <input type="file" id="imageUpload" name="image_upload" accept="image/*" style="display:none" onchange="previewImage(this)">
+
+          <!-- OU nom de fichier existant -->
+          <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+            <div style="flex:1;height:1px;background:#eee;"></div>
+            <span style="font-size:10px;color:#aaa;letter-spacing:1px;">OU</span>
+            <div style="flex:1;height:1px;background:#eee;"></div>
+          </div>
+          <input type="text" name="image" class="form-control mt-2" placeholder="nail-01.jpg (fichier existant)"
+            style="font-size:11px;" id="imageNameInput">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Durée (min)</label>
+          <input type="number" name="duree" class="form-control" value="60">
+        </div>
+
+        <button type="submit" class="btn w-100"
+          style="background:#1e1030;color:#fff;border-radius:0;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px;">
+          ＋ Ajouter le service
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══ LISTE SERVICES ═══ -->
+  <div class="col-lg-8">
+    <div class="bg-white rounded-3 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;margin:0;">
+          Services (<%= services ? services.length : 0 %>)
+        </h6>
+        <form action="/admin/services/dedup" method="POST" onsubmit="return confirm('Supprimer tous les services en double ?')">
+          <button type="submit" class="btn btn-sm btn-outline-warning"
+            style="font-size:10px;letter-spacing:1px;border-radius:0;">
+            <i class="bi bi-scissors me-1"></i>Supprimer doublons
+          </button>
+        </form>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table align-middle" style="font-size:13px;">
+          <thead>
+            <tr style="border-bottom:2px solid #f0e6f6;">
+              <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Service</th>
+              <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Catégorie</th>
+              <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Prix / Remise</th>
+              <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Durée</th>
+              <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;padding-bottom:12px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (services && services.length > 0) { %>
+              <% services.forEach(function(s) { %>
+              <tr style="border-bottom:1px solid #f9f3fd;transition:background 0.2s;"
+                  onmouseover="this.style.background='#fdf8ff'" onmouseout="this.style.background=''">
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    <img src="/images/<%= s.image || 'nail-01.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt=""
+                      style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;"
+                      onerror="this.src='/images/nail-01.jpg'">
+                    <div>
+                      <div style="font-weight:600;color:#1e1030;font-size:13px;"><%= s.nom %></div>
+                      <div style="font-size:11px;color:#aaa;">
+                        <%= s.description ? s.description.substring(0,45) + (s.description.length > 45 ? '…' : '') : '—' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="background:#f3e5f5;color:#8e6db0;font-size:10px;letter-spacing:1px;padding:3px 10px;border-radius:20px;text-transform:uppercase;">
+                    <%= s.categorie %>
+                  </span>
+                </td>
+                <td style="font-weight:600;color:#1e1030;font-family:'Playfair Display',serif;font-size:1rem;">
+                  <% if (s.remise_type && s.remise_type !== 'none' && s.remise_valeur > 0) { %>
+                    <% const prixFinal = s.remise_type === 'pourcentage' ? s.prix * (1 - s.remise_valeur/100) : s.prix - s.remise_valeur; %>
+                    <div style="font-size:11px;color:#aaa;text-decoration:line-through;"><%= Number(s.prix).toLocaleString('fr-FR') %> FCFA</div>
+                    <div style="color:#d4187f;"><%= Number(prixFinal).toLocaleString('fr-FR') %> <small style="font-size:9px;color:#aaa;font-family:'Jost',sans-serif;font-weight:400;">FCFA</small></div>
+                    <div class="remise-badge mt-1">
+                      🏷️ -<%= s.remise_type === 'pourcentage' ? s.remise_valeur + '%' : Number(s.remise_valeur).toLocaleString('fr-FR') + ' FCFA' %>
+                      <% if (s.remise_label) { %> · <%= s.remise_label %><% } %>
+                    </div>
+                  <% } else { %>
+                    <%= Number(s.prix).toLocaleString('fr-FR') %> <small style="font-size:9px;color:#aaa;font-family:'Jost',sans-serif;font-weight:400;">FCFA</small>
+                  <% } %>
+                </td>
+                <td style="color:#888;font-size:12px;"><%= s.duree %> min</td>
+                <td>
+                  <div class="d-flex gap-2 align-items-center">
+                    <!-- Bouton remise -->
+                    <button type="button" class="btn btn-sm" title="Gérer remise"
+                      onclick="openRemiseModal(<%= s.id %>, '<%= encodeURIComponent(s.nom) %>', <%= s.prix %>, '<%= s.remise_type||'none' %>', <%= s.remise_valeur||0 %>, '<%= s.remise_label||'' %>')"
+                      style="background:<%= (s.remise_type && s.remise_type !== 'none') ? '#fff3cd' : '#f3e5f5' %>;color:<%= (s.remise_type && s.remise_type !== 'none') ? '#d4187f' : '#8e6db0' %>;border:none;border-radius:50%;width:32px;height:32px;padding:0;">
+                      🏷️
+                    </button>
+                    <!-- Supprimer remise si active -->
+                    <% if (s.remise_type && s.remise_type !== 'none') { %>
+                    <form action="/admin/services/<%= s.id %>/remise/supprimer" method="POST" style="display:inline;">
+                      <button type="submit" class="btn btn-sm" title="Supprimer remise"
+                        style="background:#fdf0f0;color:#e74c3c;border:none;border-radius:50%;width:32px;height:32px;padding:0;font-size:11px;">✕</button>
+                    </form>
+                    <% } %>
+                    <!-- Supprimer service -->
+                    <form action="/admin/services/<%= s.id %>/delete" method="POST"
+                      onsubmit="return confirm('Supprimer ce service ?')">
+                      <button type="submit" class="btn btn-sm"
+                        style="background:#fdf0f0;color:#e74c3c;border:none;border-radius:50%;width:32px;height:32px;padding:0;">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td colspan="5" class="text-center py-5 text-muted">Aucun service. Ajoutez-en un ci-contre.</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REMISE -->
+<div id="remiseModal" style="display:none;position:fixed;inset:0;background:rgba(26,10,46,0.7);z-index:9999;backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:2rem;max-width:420px;width:90%;position:relative;animation:slideInModal 0.3s cubic-bezier(0.16,1,0.3,1);">
+    <style>@keyframes slideInModal { from { opacity:0; transform:translateY(20px) scale(0.97); } to { opacity:1; transform:none; } }</style>
+    <button onclick="closeRemiseModal()" style="position:absolute;top:16px;right:16px;background:#f5f5f5;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;color:#666;">×</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;">
+      <span style="font-size:1.5rem;">🏷️</span>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;font-weight:600;color:#1e1030;">Appliquer une remise</div>
+        <div id="remiseModalServiceName" style="font-size:12px;color:#8e6db0;"></div>
+      </div>
+    </div>
+    <form id="remiseForm" method="POST" action="">
+      <div class="mb-3">
+        <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;display:block;margin-bottom:8px;">Type de remise</label>
+        <div class="remise-type-selector">
+          <div class="remise-type-btn active" id="btnPourcentage" onclick="setRemiseType('pourcentage')">% Pourcentage</div>
+          <div class="remise-type-btn" id="btnMontant" onclick="setRemiseType('montant')">FCFA Montant fixe</div>
+        </div>
+        <input type="hidden" name="remise_type" id="remiseTypeInput" value="pourcentage">
+      </div>
+      <div class="mb-3">
+        <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;display:block;margin-bottom:8px;">Valeur *</label>
+        <div style="position:relative;">
+          <input type="number" name="remise_valeur" id="remiseValeurInput" class="form-control" step="0.01" min="0" required placeholder="ex: 10" style="padding-right:60px;">
+          <span id="remiseSuffix" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#8e6db0;font-size:13px;font-weight:600;">%</span>
+        </div>
+        <div id="remisePreview" style="margin-top:8px;font-size:12px;color:#888;"></div>
+      </div>
+      <div class="mb-4">
+        <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:500;display:block;margin-bottom:8px;">Libellé (optionnel)</label>
+        <input type="text" name="remise_label" id="remiseLabelInput" class="form-control" placeholder="ex: Promo été, Flash sale..." maxlength="50">
+      </div>
+      <button type="submit" class="btn w-100" style="background:linear-gradient(135deg,#1e1030,#6b4880);color:#fff;border-radius:8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px;">
+        ✓ Appliquer la remise
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+let _remisePrix = 0;
+let _remiseType = 'pourcentage';
+
+function openRemiseModal(id, nom, prix, type, valeur, label) {
+  _remisePrix = prix;
+  _remiseType = type === 'montant' ? 'montant' : 'pourcentage';
+  document.getElementById('remiseModalServiceName').textContent = decodeURIComponent(nom);
+  document.getElementById('remiseForm').action = '/admin/services/' + id + '/remise';
+  document.getElementById('remiseTypeInput').value = _remiseType;
+  document.getElementById('remiseValeurInput').value = valeur || '';
+  document.getElementById('remiseLabelInput').value = label || '';
+  setRemiseType(_remiseType);
+  updatePreview();
+  const modal = document.getElementById('remiseModal');
+  modal.style.display = 'flex';
+  setTimeout(() => modal.style.opacity = '1', 10);
+}
+
+function closeRemiseModal() {
+  document.getElementById('remiseModal').style.display = 'none';
+}
+
+function setRemiseType(type) {
+  _remiseType = type;
+  document.getElementById('remiseTypeInput').value = type;
+  document.getElementById('btnPourcentage').className = 'remise-type-btn' + (type === 'pourcentage' ? ' active' : '');
+  document.getElementById('btnMontant').className = 'remise-type-btn' + (type === 'montant' ? ' active' : '');
+  document.getElementById('remiseSuffix').textContent = type === 'pourcentage' ? '%' : 'F';
+  updatePreview();
+}
+
+function updatePreview() {
+  const valeur = parseFloat(document.getElementById('remiseValeurInput').value) || 0;
+  const preview = document.getElementById('remisePreview');
+  if (valeur > 0 && _remisePrix > 0) {
+    let final = _remiseType === 'pourcentage' ? _remisePrix * (1 - valeur/100) : _remisePrix - valeur;
+    if (final < 0) final = 0;
+    preview.innerHTML = `Prix original: <strong>${Number(_remisePrix).toLocaleString('fr-FR')} FCFA</strong> → Prix avec remise: <strong style="color:#d4187f">${Number(final).toLocaleString('fr-FR')} FCFA</strong>`;
+  } else { preview.textContent = ''; }
+}
+
+document.getElementById('remiseValeurInput').addEventListener('input', updatePreview);
+
+// Clic hors modal pour fermer
+document.getElementById('remiseModal').addEventListener('click', function(e) {
+  if (e.target === this) closeRemiseModal();
+});
+
+// existing functions
+function previewImage(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('previewImg');
+      const content = document.getElementById('dropContent');
+      img.src = e.target.result; img.style.display = 'block'; content.style.display = 'none';
+      document.getElementById('dropZone').style.borderColor = '#8e6db0';
+      document.getElementById('dropZone').style.background = '#f9f4ff';
+      document.getElementById('imageNameInput').value = '';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+const zone = document.getElementById('dropZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor='#8e6db0'; zone.style.background='#f9f4ff'; });
+zone.addEventListener('dragleave', () => { zone.style.borderColor='#e0d0ee'; zone.style.background='#fdf9ff'; });
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+  if (files.length) { document.getElementById('imageUpload').files = files; previewImage(document.getElementById('imageUpload')); }
+});
+</script>
+
+<%- include('layout-bottom') %>

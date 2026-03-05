@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&family=Pinyon+Script&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- PAGE LOADER PREMIUM KHOYANE BEAUTY -->
+<div id="page-loader">
+  <div class="loader-brand">Khoyane</div>
+  <div class="loader-sub">Beauty ✦ Dakar</div>
+  <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+  <div class="loader-ornament">
+    <div class="loader-ornament-line"></div>
+    <div class="loader-ornament-diamond"></div>
+    <div class="loader-ornament-line"></div>
+  </div>
+</div>
+
+<!-- Curseur personnalisé -->
+
+
+<!-- Top Bar -->
+<div class="topbar d-none d-md-block">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="topbar-left">
+        <span class="me-3"><i class="bi bi-credit-card me-1"></i>Paiements</span>
+        <span class="me-3"><i class="bi bi-truck me-1"></i>Livraison</span>
+        <span class="me-3"><i class="bi bi-file-text me-1"></i>Conditions</span>
+        <span><i class="bi bi-clock me-1"></i>Lun-Sam: 9h-19h</span>
+      </div>
+      <div class="topbar-right">
+        <a href="#"><i class="bi bi-search me-3"></i></a>
+        <a href="/admin" class="me-3"><i class="bi bi-person me-1"></i>Admin</a>
+        <a href="/reservation"><i class="bi bi-bag me-1"></i>Réserver</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top main-navbar">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="/">
+      <div class="brand-logo">
+        <span class="brand-name">KHOYANE</span>
+        <span class="brand-sub">✦ Beauty ✦</span>
+      </div>
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarMain">
+      <ul class="navbar-nav gap-4">
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath === '/' ? 'active' : '' %>" href="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath === '/about' ? 'active' : '' %>" href="/about">À Propos</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle <%= currentPath.startsWith('/services') ? 'active' : '' %>" href="#" data-bs-toggle="dropdown">Services</a>
+          <ul class="dropdown-menu shadow border-0">
+            <li><a class="dropdown-item" href="/services#manicure">Manucure</a></li>
+            <li><a class="dropdown-item" href="/services#pedicure">Pédicure</a></li>
+            <li><a class="dropdown-item" href="/services#nailcare">Soin Ongles</a></li>
+            <li><a class="dropdown-item" href="/services#cosmetics">Cosmétiques</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath.startsWith('/galerie') ? 'active' : '' %>" href="/galerie">Galerie</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath.startsWith('/produits') ? 'active' : '' %>" href="/produits">Produits</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath.startsWith('/blog') ? 'active' : '' %>" href="/blog">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>" href="/contact">Contact</a>
+        </li>
+      </ul>
+    </div>
+    <div class="navbar-actions d-none d-lg-flex align-items-center gap-3">
+      <span class="phone-display"><i class="bi bi-telephone me-1"></i>+221 78 247 81 47 / +221 78 136 53 58</span>
+      <a href="/reservation" class="btn btn-book">Book now →</a>
+    </div>
+  </div>
+</nav>

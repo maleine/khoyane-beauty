@@ -1,0 +1,213 @@
+<%- include('layout-top') %>
+
+<% if (success) { %>
+<div class="alert mb-4" style="background:#d4edda;border-left:4px solid #28a745;border-radius:4px;padding:12px 16px;font-size:13px;color:#155724;">
+  ✓ <%= success %>
+</div>
+<% } %>
+<% if (error) { %>
+<div class="alert mb-4" style="background:#f8d7da;border-left:4px solid #dc3545;border-radius:4px;padding:12px 16px;font-size:13px;color:#721c24;">
+  ⚠ <%= error %>
+</div>
+<% } %>
+
+<!-- Bannière promo animée -->
+<div style="background:linear-gradient(135deg,#1a0a2e,#7b2d8b);color:#fff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(233,30,140,0.15);"></div>
+  <div style="position:absolute;bottom:-30px;right:80px;width:80px;height:80px;border-radius:50%;background:rgba(155,89,182,0.2);"></div>
+  <div style="position:relative;z-index:1;">
+    <div style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">Khoyane Beauty</div>
+    <h5 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;margin:0;">Gestion des Remises & Codes Promo</h5>
+    <p style="font-size:12px;color:rgba(255,255,255,0.6);margin:8px 0 0;">Créez des remises sur vos services et gérez vos codes promotionnels.</p>
+  </div>
+</div>
+
+<div class="row g-4">
+
+  <!-- ═══ FORMULAIRE NOUVEAU CODE ═══ -->
+  <div class="col-lg-4">
+    <div class="bg-white rounded-3 p-4" style="position:sticky;top:80px;">
+      <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;margin-bottom:1.5rem;">
+        🎟️ Créer un code promo
+      </h6>
+
+      <form action="/admin/promos" method="POST">
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Code promo *</label>
+          <input type="text" name="code" class="form-control" required placeholder="ex: PROMO20"
+            style="text-transform:uppercase;font-weight:600;letter-spacing:2px;">
+          <small style="color:#aaa;font-size:10px;">Majuscules automatiques, sans espaces</small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Type de remise *</label>
+          <div style="display:flex;gap:8px;">
+            <label style="flex:1;border:1px solid #e0d0ee;border-radius:8px;padding:10px;text-align:center;cursor:pointer;font-size:12px;transition:all 0.2s;" id="lbl-pct">
+              <input type="radio" name="type_remise" value="pourcentage" checked style="display:none;" onchange="document.getElementById('lbl-pct').style.background='#1a0a2e';document.getElementById('lbl-pct').style.color='#fff';document.getElementById('lbl-mnt').style.background='';document.getElementById('lbl-mnt').style.color='';">
+              <div style="font-size:1.2rem;">%</div>
+              <div>Pourcentage</div>
+            </label>
+            <label style="flex:1;border:1px solid #e0d0ee;border-radius:8px;padding:10px;text-align:center;cursor:pointer;font-size:12px;transition:all 0.2s;" id="lbl-mnt">
+              <input type="radio" name="type_remise" value="montant" style="display:none;" onchange="document.getElementById('lbl-mnt').style.background='#1a0a2e';document.getElementById('lbl-mnt').style.color='#fff';document.getElementById('lbl-pct').style.background='';document.getElementById('lbl-pct').style.color='';">
+              <div style="font-size:1.2rem;">F</div>
+              <div>Montant fixe</div>
+            </label>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Valeur *</label>
+          <input type="number" name="valeur" class="form-control" step="0.01" min="0" required placeholder="ex: 15">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Description</label>
+          <input type="text" name="description" class="form-control" placeholder="ex: Remise de bienvenue">
+        </div>
+
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Max utilisations</label>
+            <input type="number" name="max_utilisations" class="form-control" min="1" placeholder="Illimité">
+          </div>
+          <div class="col-6 mb-3">
+            <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Date expiration</label>
+            <input type="date" name="date_expiration" class="form-control">
+          </div>
+        </div>
+
+        <button type="submit" class="btn w-100"
+          style="background:linear-gradient(135deg,#1a0a2e,#7b2d8b);color:#fff;border-radius:8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px;border:none;">
+          ＋ Créer le code
+        </button>
+      </form>
+
+      <!-- Aide -->
+      <div style="margin-top:1.5rem;padding:1rem;background:#fdf9ff;border-radius:8px;border-left:3px solid #9b59b6;">
+        <div style="font-size:11px;font-weight:600;color:#7b2d8b;margin-bottom:6px;">💡 Comment ça marche ?</div>
+        <div style="font-size:11px;color:#888;line-height:1.6;">
+          Les remises directes s'appliquent via le bouton 🏷️ sur chaque service.<br>
+          Les codes promo sont des codes à saisir lors de la réservation.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LISTE CODES PROMO ═══ -->
+  <div class="col-lg-8">
+    <div class="bg-white rounded-3 p-4">
+      <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;margin-bottom:1.5rem;">
+        Codes promo actifs (<%= promos ? promos.filter(p => p.actif).length : 0 %>)
+      </h6>
+
+      <% if (promos && promos.length > 0) { %>
+        <div class="row g-3">
+          <% promos.forEach(function(p) { 
+            const isExpired = p.date_expiration && new Date(p.date_expiration) < new Date();
+            const isMaxed = p.max_utilisations && p.utilisations >= p.max_utilisations;
+            const isActive = p.actif && !isExpired && !isMaxed;
+          %>
+          <div class="col-md-6">
+            <div style="border:1px solid <%= isActive ? '#e0d0ee' : '#eee' %>;border-radius:12px;padding:1.2rem;position:relative;background:<%= isActive ? '#fdf8ff' : '#f9f9f9' %>;transition:all 0.2s;"
+              onmouseover="this.style.boxShadow='0 4px 20px rgba(155,89,182,0.12)'" onmouseout="this.style.boxShadow=''">
+              
+              <!-- Status badge -->
+              <div style="position:absolute;top:12px;right:12px;">
+                <% if (!p.actif) { %>
+                  <span style="background:#eee;color:#999;font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:1px;">DÉSACTIVÉ</span>
+                <% } else if (isExpired) { %>
+                  <span style="background:#fdf0f0;color:#e74c3c;font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:1px;">EXPIRÉ</span>
+                <% } else if (isMaxed) { %>
+                  <span style="background:#fff3cd;color:#e67e22;font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:1px;">ÉPUISÉ</span>
+                <% } else { %>
+                  <span style="background:#d4edda;color:#28a745;font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:1px;">● ACTIF</span>
+                <% } %>
+              </div>
+
+              <!-- Code -->
+              <div style="font-family:monospace;font-size:1.3rem;font-weight:700;color:#1a0a2e;letter-spacing:3px;margin-bottom:8px;">
+                <%= p.code %>
+              </div>
+
+              <!-- Valeur remise -->
+              <div style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#e91e8c,#9b59b6);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:10px;">
+                🏷️ -<%= p.type_remise === 'pourcentage' ? p.valeur + '%' : Number(p.valeur).toLocaleString('fr-FR') + ' FCFA' %>
+              </div>
+
+              <!-- Description -->
+              <% if (p.description) { %>
+              <div style="font-size:12px;color:#666;margin-bottom:10px;"><%= p.description %></div>
+              <% } %>
+
+              <!-- Stats -->
+              <div style="display:flex;gap:12px;font-size:11px;color:#aaa;margin-bottom:12px;">
+                <span><i class="bi bi-arrow-repeat me-1"></i><%= p.utilisations %> utilisation<%= p.utilisations !== 1 ? 's' : '' %>
+                  <% if (p.max_utilisations) { %> / <%= p.max_utilisations %><% } %>
+                </span>
+                <% if (p.date_expiration) { %>
+                <span><i class="bi bi-calendar me-1"></i>Exp: <%= new Date(p.date_expiration).toLocaleDateString('fr-FR') %></span>
+                <% } %>
+              </div>
+
+              <!-- Actions -->
+              <div style="display:flex;gap:8px;">
+                <form action="/admin/promos/<%= p.id %>/toggle" method="POST" style="flex:1;">
+                  <button type="submit" class="btn btn-sm w-100"
+                    style="background:<%= p.actif ? '#fff3cd' : '#d4edda' %>;color:<%= p.actif ? '#e67e22' : '#28a745' %>;border:none;border-radius:6px;font-size:10px;letter-spacing:1px;padding:6px;">
+                    <%= p.actif ? '⏸ Désactiver' : '▶ Activer' %>
+                  </button>
+                </form>
+                <form action="/admin/promos/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Supprimer ce code ?')">
+                  <button type="submit" class="btn btn-sm"
+                    style="background:#fdf0f0;color:#e74c3c;border:none;border-radius:6px;width:34px;height:34px;padding:0;">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+                <!-- Copier code -->
+                <button onclick="copyCode('<%= p.code %>')" class="btn btn-sm"
+                  style="background:#f3e5f5;color:#9b59b6;border:none;border-radius:6px;width:34px;height:34px;padding:0;"
+                  title="Copier le code">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="text-center py-5">
+          <div style="font-size:3rem;margin-bottom:12px;">🏷️</div>
+          <div style="color:#aaa;font-size:14px;">Aucun code promo. Créez-en un ci-contre.</div>
+        </div>
+      <% } %>
+
+      <!-- Section remises directes sur services -->
+      <div class="mt-5 pt-4" style="border-top:1px solid #f0e6f6;">
+        <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:#7b2d8b;margin-bottom:1rem;">
+          💅 Remises directes sur services
+        </h6>
+        <div style="background:#fdf9ff;border-radius:8px;padding:1rem;font-size:13px;color:#666;line-height:1.8;">
+          Pour appliquer une remise directement sur un service (ex: -20% sur la Pose Américaine), rendez-vous dans 
+          <a href="/admin/services" style="color:#9b59b6;font-weight:600;">→ Services</a> 
+          et cliquez sur le bouton 🏷️ à côté du service concerné.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => {
+    if (window.showToast) window.showToast('Code copié : ' + code);
+    else alert('Code copié : ' + code);
+  });
+}
+
+// Auto uppercase code input
+const codeInput = document.querySelector('input[name="code"]');
+if (codeInput) codeInput.addEventListener('input', function() { this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
+</script>
+
+<%- include('layout-bottom') %>

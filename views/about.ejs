@@ -1,0 +1,108 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <img src="/images/nail-_25_.jpg" alt="À Propos" class="page-hero-bg" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+  <div class="page-hero-content text-center">
+    <p class="section-pre gold">notre histoire</p>
+    <h1 class="page-hero-title">À PROPOS</h1>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-md-6">
+        <p class="section-pre gold">qui sommes-nous</p>
+        <h2 class="section-title">UNE PASSION POUR LA BEAUTÉ DES ONGLES</h2>
+        <p>Fondé en 2010, Khoyane Beauty est un espace dédié à la beauté et à l'art des ongles. Notre équipe de professionnels passionnés vous accueille dans un cadre luxueux et relaxant.</p>
+        <p>Nous utilisons exclusivement des produits naturels certifiés, sélectionnés pour leur efficacité et leur respect de votre santé. Notre mission : vous offrir des ongles sublimes qui durent.</p>
+        <div class="row mt-4 g-3">
+          <div class="col-4 text-center">
+            <div class="stat-number">13+</div>
+            <div class="stat-label">Ans d'exp.</div>
+          </div>
+          <div class="col-4 text-center">
+            <div class="stat-number">25</div>
+            <div class="stat-label">Expertes</div>
+          </div>
+          <div class="col-4 text-center">
+            <div class="stat-number">5k+</div>
+            <div class="stat-label">Clientes</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row g-3">
+          <div class="col-6"><img src="/images/nail-01.jpg" class="img-fluid rounded" alt="Studio" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"></div>
+          <div class="col-6 mt-4"><img src="/images/nail-05.jpg" class="img-fluid rounded" alt="Studio" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"></div>
+          <div class="col-6"><img src="/images/nail-08.jpg" class="img-fluid rounded" alt="Studio" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"></div>
+          <div class="col-6 mt-n4"><img src="/images/nail-12.jpg" class="img-fluid rounded" alt="Studio" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">NOS VALEURS</h2>
+    <div class="row g-4 text-center">
+      <div class="col-md-3">
+        <div class="value-card p-4">
+          <i class="bi bi-heart fs-2 text-gold mb-3 d-block"></i>
+          <h5>Passion</h5>
+          <p class="small text-muted">Chaque ongle est une œuvre d'art que nous créons avec amour.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="value-card p-4">
+          <i class="bi bi-award fs-2 text-gold mb-3 d-block"></i>
+          <h5>Excellence</h5>
+          <p class="small text-muted">Des standards élevés pour chaque service que nous proposons.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="value-card p-4">
+          <i class="bi bi-flower1 fs-2 text-gold mb-3 d-block"></i>
+          <h5>Naturel</h5>
+          <p class="small text-muted">Produits 100% naturels pour votre santé et l'environnement.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="value-card p-4">
+          <i class="bi bi-people fs-2 text-gold mb-3 d-block"></i>
+          <h5>Confiance</h5>
+          <p class="small text-muted">Une relation durable basée sur l'écoute et la transparence.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5">
+  <div class="container">
+    <p class="section-pre text-center gold">témoignages</p>
+    <h2 class="section-title text-center mb-5">CE QUE DISENT NOS CLIENTES</h2>
+    <div class="row g-4">
+      <% temoignages.forEach(function(t) { %>
+      <div class="col-md-6">
+        <div class="testimonial-card">
+          <div class="stars mb-2">
+            <% for(let i=0; i<t.note; i++) { %><i class="bi bi-star-fill text-warning"></i><% } %>
+          </div>
+          <p class="testimonial-text">"<%= t.texte %>"</p>
+          <div class="testimonial-author mt-3">
+            <div class="author-avatar"><%= t.nom.charAt(0) %></div>
+            <span class="author-name"><%= t.nom %></span>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

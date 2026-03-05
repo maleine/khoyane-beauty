@@ -1,0 +1,200 @@
+<%- include('layout-top') %>
+
+<% if (success) { %>
+<div class="alert mb-4" style="background:#d4edda;border-left:4px solid #28a745;border-radius:4px;padding:12px 16px;font-size:13px;color:#155724;">
+  ✓ <%= success %>
+</div>
+<% } %>
+<% if (error) { %>
+<div class="alert mb-4" style="background:#f8d7da;border-left:4px solid #dc3545;border-radius:4px;padding:12px 16px;font-size:13px;color:#721c24;">
+  ⚠ <%= error %>
+</div>
+<% } %>
+
+<div class="row g-4">
+
+  <!-- ═══ FORMULAIRE AJOUT ═══ -->
+  <div class="col-lg-4">
+    <div class="bg-white rounded-3 p-4" style="position:sticky;top:80px;">
+      <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;margin-bottom:1.5rem;">
+        Nouvel article
+      </h6>
+
+      <form action="/admin/articles" method="POST" enctype="multipart/form-data">
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Titre *</label>
+          <input type="text" name="titre" class="form-control" required placeholder="Titre de l'article...">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Contenu *</label>
+          <textarea name="contenu" class="form-control" rows="5" required placeholder="Écrivez votre article ici..."></textarea>
+        </div>
+
+        <!-- ── Image upload ── -->
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Image de couverture</label>
+
+          <div id="artDropZone" onclick="document.getElementById('artImageUpload').click()"
+            style="border:2px dashed #e0d0ee;border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fdf9ff;position:relative;overflow:hidden;">
+            <div id="artDropContent">
+              <div style="font-size:2rem;margin-bottom:8px;">📸</div>
+              <div style="font-size:12px;color:#9b59b6;font-weight:500;">Cliquez ou glissez une image</div>
+              <div style="font-size:10px;color:#aaa;margin-top:4px;">JPG, PNG, WEBP · Max 5MB</div>
+            </div>
+            <img id="artPreviewImg" src="" alt=""
+              style="display:none;max-height:150px;border-radius:6px;object-fit:cover;width:100%;" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+            <div id="artPreviewOverlay"
+              style="display:none;position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.5);color:#fff;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:12px;align-items:center;justify-content:center;"
+              onclick="resetArtImage(event)">✕</div>
+          </div>
+          <input type="file" id="artImageUpload" name="image_upload" accept="image/*" style="display:none" onchange="previewArtImage(this)">
+
+          <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+            <div style="flex:1;height:1px;background:#eee;"></div>
+            <span style="font-size:10px;color:#aaa;letter-spacing:1px;">OU fichier existant</span>
+            <div style="flex:1;height:1px;background:#eee;"></div>
+          </div>
+          <input type="text" name="image" class="form-control mt-2" placeholder="nail-01.jpg"
+            style="font-size:11px;" id="artImageNameInput">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Catégorie</label>
+          <select name="categorie" class="form-select">
+            <option value="MANICURE">Manicure</option>
+            <option value="PEDICURE">Pédicure</option>
+            <option value="NAIL BAR">Nail Bar</option>
+            <option value="BEAUTE">Beauté</option>
+            <option value="CONSEILS">Conseils</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;">Auteur</label>
+          <input type="text" name="auteur" class="form-control" value="Admin">
+        </div>
+
+        <button type="submit" class="btn w-100"
+          style="background:#1a0a2e;color:#fff;border-radius:0;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px;">
+          ✍ Publier l'article
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══ LISTE ARTICLES ═══ -->
+  <div class="col-lg-8">
+    <div class="bg-white rounded-3 p-4">
+      <h6 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;margin-bottom:1.5rem;">
+        Articles publiés (<%= articles ? articles.length : 0 %>)
+      </h6>
+
+      <% if (articles && articles.length > 0) { %>
+      <div class="d-flex flex-column gap-3">
+        <% articles.forEach(function(a) { %>
+        <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;border:1px solid #f0e6f6;border-radius:8px;transition:box-shadow 0.2s;"
+          onmouseover="this.style.boxShadow='0 4px 20px rgba(155,89,182,0.1)'" onmouseout="this.style.boxShadow=''">
+
+          <!-- Image -->
+          <img src="/images/<%= a.image || 'nail-01.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt=""
+            style="width:80px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0;"
+            onerror="this.src='/images/nail-01.jpg'">
+
+          <!-- Infos -->
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+              <div>
+                <div style="font-weight:600;color:#1a0a2e;font-size:13px;margin-bottom:4px;">
+                  <%= a.titre.substring(0, 60) %><%= a.titre.length > 60 ? '…' : '' %>
+                </div>
+                <div style="font-size:11px;color:#aaa;margin-bottom:6px;">
+                  <span style="background:#f3e5f5;color:#9b59b6;padding:2px 8px;border-radius:20px;font-size:9px;letter-spacing:1px;text-transform:uppercase;">
+                    <%= a.categorie %>
+                  </span>
+                  <span class="ms-2"><i class="bi bi-person me-1"></i><%= a.auteur %></span>
+                  <span class="ms-2"><i class="bi bi-calendar3 me-1"></i><%= new Date(a.created_at).toLocaleDateString('fr-FR') %></span>
+                  <span class="ms-2"><i class="bi bi-eye me-1"></i><%= a.vues %> vues</span>
+                </div>
+                <div style="font-size:11px;color:#888;font-style:italic;">
+                  "<%= a.contenu ? a.contenu.substring(0, 80) + (a.contenu.length > 80 ? '…' : '') : '' %>"
+                </div>
+              </div>
+              <!-- Actions -->
+              <div style="display:flex;gap:6px;flex-shrink:0;">
+                <a href="/blog/<%= a.id %>" target="_blank"
+                  class="btn btn-sm"
+                  style="background:#f0e8fd;color:#9b59b6;border:none;border-radius:50%;width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;"
+                  title="Voir l'article">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <form action="/admin/articles/<%= a.id %>/delete" method="POST"
+                  onsubmit="return confirm('Supprimer cet article ?')">
+                  <button type="submit"
+                    style="background:#fdf0f0;color:#e74c3c;border:none;border-radius:50%;width:32px;height:32px;padding:0;cursor:pointer;"
+                    title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <% } else { %>
+        <div class="text-center py-5 text-muted">
+          <div style="font-size:3rem;margin-bottom:1rem;">✍️</div>
+          <p style="font-size:14px;">Aucun article. Rédigez le premier !</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+function previewArtImage(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('artPreviewImg');
+      const content = document.getElementById('artDropContent');
+      const overlay = document.getElementById('artPreviewOverlay');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      content.style.display = 'none';
+      overlay.style.display = 'flex';
+      document.getElementById('artDropZone').style.borderColor = '#9b59b6';
+      document.getElementById('artDropZone').style.background = '#f9f4ff';
+      document.getElementById('artImageNameInput').value = '';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function resetArtImage(e) {
+  e.stopPropagation();
+  document.getElementById('artPreviewImg').style.display = 'none';
+  document.getElementById('artDropContent').style.display = 'block';
+  document.getElementById('artPreviewOverlay').style.display = 'none';
+  document.getElementById('artDropZone').style.borderColor = '#e0d0ee';
+  document.getElementById('artDropZone').style.background = '#fdf9ff';
+  document.getElementById('artImageUpload').value = '';
+}
+
+// Drag & drop
+const zone = document.getElementById('artDropZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor='#9b59b6'; zone.style.background='#f9f4ff'; });
+zone.addEventListener('dragleave', () => { zone.style.borderColor='#e0d0ee'; zone.style.background='#fdf9ff'; });
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+  if (files.length) {
+    document.getElementById('artImageUpload').files = files;
+    previewArtImage(document.getElementById('artImageUpload'));
+  }
+});
+</script>
+
+<%- include('layout-bottom') %>

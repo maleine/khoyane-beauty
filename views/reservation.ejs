@@ -1,0 +1,185 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <img src="/images/nail-_15_.jpg" alt="Réservation" class="page-hero-bg" onerror="this.onerror=null;this.src='/images/nail-01.jpg'">
+  <div class="page-hero-content text-center">
+    <p class="section-pre gold">rendez-vous</p>
+    <h1 class="page-hero-title">RÉSERVATION</h1>
+  </div>
+</section>
+
+<section class="reservation-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <% if (success === 'confirmed' && reservation) { %>
+        <!-- ══════ NOTIFICATION CONFIRMATION CLIENT ══════ -->
+        <div class="confirmation-card text-center">
+          <div class="confirmation-icon">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <h2 class="confirmation-title">Réservation confirmée !</h2>
+          <p class="confirmation-sub">Merci <strong><%= reservation.prenom %> <%= reservation.nom %></strong>, votre demande de rendez-vous a bien été enregistrée.</p>
+
+          <div class="confirmation-details">
+            <div class="confirmation-row">
+              <span class="confirmation-label"><i class="bi bi-scissors me-2"></i>Service</span>
+              <span class="confirmation-value"><%= reservation.service_nom %></span>
+            </div>
+            <div class="confirmation-row">
+              <span class="confirmation-label"><i class="bi bi-calendar3 me-2"></i>Date</span>
+              <span class="confirmation-value"><%= reservation.date_rdv %></span>
+            </div>
+            <div class="confirmation-row">
+              <span class="confirmation-label"><i class="bi bi-clock me-2"></i>Heure</span>
+              <span class="confirmation-value"><%= reservation.heure_rdv %></span>
+            </div>
+            <div class="confirmation-row">
+              <span class="confirmation-label"><i class="bi bi-telephone me-2"></i>Téléphone</span>
+              <span class="confirmation-value"><%= reservation.telephone %></span>
+            </div>
+            <% if (reservation.message) { %>
+            <div class="confirmation-row">
+              <span class="confirmation-label"><i class="bi bi-chat me-2"></i>Message</span>
+              <span class="confirmation-value"><%= reservation.message %></span>
+            </div>
+            <% } %>
+          </div>
+
+          <div class="confirmation-notice">
+            <i class="bi bi-bell me-2"></i>
+            Notre équipe vous contactera au <strong><%= reservation.telephone %></strong> pour confirmer votre rendez-vous.
+          </div>
+
+          <div class="confirmation-contact">
+            <p style="font-size:13px;color:#888;margin-bottom:8px;">Des questions ? Contactez-nous directement :</p>
+            <a href="tel:+221782478147" class="btn-confirm-contact me-2">
+              <i class="bi bi-telephone me-1"></i>+221 78 247 81 47
+            </a>
+            <a href="https://wa.me/221782478147" target="_blank" class="btn-confirm-wa">
+              <i class="bi bi-whatsapp me-1"></i>WhatsApp
+            </a>
+          </div>
+
+          <a href="/" class="btn-back-home">
+            <i class="bi bi-house me-2"></i>Retour à l'accueil
+          </a>
+        </div>
+
+        <% } else { %>
+
+        <!-- ══════ FORMULAIRE DE RÉSERVATION ══════ -->
+        <div class="reservation-card p-4 p-md-5">
+          <div class="text-center mb-4">
+            <p class="section-pre gold">appointments</p>
+            <h2 class="section-title">PRENEZ VOTRE RDV</h2>
+            <p class="text-muted small">Remplissez le formulaire, nous vous confirmerons votre rendez-vous rapidement.</p>
+          </div>
+
+          <% if (error) { %>
+          <div class="alert alert-danger mb-4" style="border-radius:0;border-left:4px solid #e74c3c;font-size:13px;">
+            <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+          </div>
+          <% } %>
+
+          <form action="/reservation" method="POST">
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label form-label-sm">Nom *</label>
+                <input type="text" name="nom" class="form-control" placeholder="Votre nom" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label form-label-sm">Prénom *</label>
+                <input type="text" name="prenom" class="form-control" placeholder="Votre prénom" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label form-label-sm">Email *</label>
+                <input type="email" name="email" class="form-control" placeholder="votre@email.com" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label form-label-sm">Téléphone *</label>
+                <input type="tel" name="telephone" class="form-control" placeholder="7X XXX XX XX" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label form-label-sm">Service souhaité</label>
+                <select name="service_id" class="form-select">
+                  <option value="">-- Choisir un service --</option>
+                  <% if (services && services.length > 0) { %>
+                    <% let currentCatR = ''; %>
+                    <% services.forEach(function(s) { %>
+                      <% if (s.categorie !== currentCatR) { %>
+                        <% if (currentCatR !== '') { %></optgroup><% } %>
+                        <optgroup label="<%= s.categorie.toUpperCase() %>">
+                        <% currentCatR = s.categorie; %>
+                      <% } %>
+                      <option value="<%= s.id %>" <%= (selectedServiceId && selectedServiceId === s.id) ? 'selected' : '' %>><%= s.nom %> — <%= Number(s.prix).toLocaleString('fr-FR') %> FCFA</option>
+                    <% }) %>
+                    </optgroup>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label form-label-sm">Date souhaitée *</label>
+                <input type="date" name="date_rdv" class="form-control" required min="<%= new Date().toISOString().split('T')[0] %>">
+              </div>
+              <div class="col-6">
+                <label class="form-label form-label-sm">Heure *</label>
+                <select name="heure_rdv" class="form-select" required>
+                  <option value="">-- Heure --</option>
+                  <option>09:00</option><option>09:30</option>
+                  <option>10:00</option><option>10:30</option>
+                  <option>11:00</option><option>11:30</option>
+                  <option>12:00</option><option>14:00</option>
+                  <option>14:30</option><option>15:00</option>
+                  <option>15:30</option><option>16:00</option>
+                  <option>16:30</option><option>17:00</option>
+                  <option>17:30</option><option>18:00</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label form-label-sm">Message (optionnel)</label>
+                <textarea name="message" class="form-control" rows="3" placeholder="Précisions, demandes spéciales..."></textarea>
+              </div>
+              <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-book w-100" style="padding:14px;font-size:13px;letter-spacing:2px;">
+                  <i class="bi bi-calendar-check me-2"></i>Confirmer la réservation
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Info boxes -->
+        <div class="row g-3 mt-3">
+          <div class="col-4">
+            <div class="info-box text-center p-3">
+              <i class="bi bi-geo-alt fs-3 text-gold mb-2 d-block"></i>
+              <h6 style="font-size:12px;">Adresse</h6>
+              <p class="small text-muted mb-0" style="font-size:11px;">Yoff Apecsy<br>CBEAO, Dakar</p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="info-box text-center p-3">
+              <i class="bi bi-clock fs-3 text-gold mb-2 d-block"></i>
+              <h6 style="font-size:12px;">Horaires</h6>
+              <p class="small text-muted mb-0" style="font-size:11px;">Lun-Dim<br>9h00 - 20h00</p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="info-box text-center p-3">
+              <i class="bi bi-telephone fs-3 text-gold mb-2 d-block"></i>
+              <h6 style="font-size:12px;">Téléphone</h6>
+              <p class="small text-muted mb-0" style="font-size:11px;">+221 78 247 81 47<br>+221 78 136 53 58</p>
+            </div>
+          </div>
+        </div>
+
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

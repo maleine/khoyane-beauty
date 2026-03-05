@@ -1,0 +1,88 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <img src="/images/nail-_30_.jpg" alt="Contact" class="page-hero-bg" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+  <div class="page-hero-content text-center">
+    <p class="section-pre gold">nous contacter</p>
+    <h1 class="page-hero-title">CONTACT</h1>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-5">
+        <h3 class="section-title mb-4">INFORMATIONS</h3>
+        <div class="contact-info-item d-flex gap-3 mb-4">
+          <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+          <div>
+            <h6>Adresse</h6>
+            <p class="text-muted mb-0">Yoff Apecsy<br>En face de la CBEAO, Dakar, France</p>
+          </div>
+        </div>
+        <div class="contact-info-item d-flex gap-3 mb-4">
+          <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+          <div>
+            <h6>Téléphone</h6>
+            <p class="text-muted mb-0">+221 78 247 81 47 / +221 78 136 53 58</p>
+          </div>
+        </div>
+        <div class="contact-info-item d-flex gap-3 mb-4">
+          <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+          <div>
+            <h6>Email</h6>
+            <p class="text-muted mb-0">khoyane_beauty@gmail.com</p>
+          </div>
+        </div>
+        <div class="contact-info-item d-flex gap-3 mb-4">
+          <div class="contact-icon"><i class="bi bi-clock-fill"></i></div>
+          <div>
+            <h6>Horaires d'ouverture</h6>
+            <p class="text-muted mb-0">Lundi - Samedi: 9h00 - 19h00<br>Dimanche: Fermé</p>
+          </div>
+        </div>
+        <div class="social-links mt-4">
+          <a href="#" class="social-link me-3 dark"><i class="bi bi-facebook fs-4"></i></a>
+          <a href="#" class="social-link me-3 dark"><i class="bi bi-instagram fs-4"></i></a>
+          <a href="#" class="social-link me-3 dark"><i class="bi bi-twitter-x fs-4"></i></a>
+          <a href="#" class="social-link dark"><i class="bi bi-youtube fs-4"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="contact-form-card p-4 p-md-5">
+          <h3 class="section-title mb-4">ENVOYEZ UN MESSAGE</h3>
+          <% if (success) { %>
+          <div class="alert alert-success"><%= success %></div>
+          <% } %>
+          <% if (error) { %>
+          <div class="alert alert-danger"><%= error %></div>
+          <% } %>
+          <form>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="text" class="form-control form-control-lg" placeholder="Votre nom" required>
+              </div>
+              <div class="col-md-6">
+                <input type="email" class="form-control form-control-lg" placeholder="Votre email" required>
+              </div>
+              <div class="col-12">
+                <input type="text" class="form-control form-control-lg" placeholder="Sujet">
+              </div>
+              <div class="col-12">
+                <textarea class="form-control" rows="5" placeholder="Votre message..." required></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-book w-100 btn-lg">
+                  <i class="bi bi-send me-2"></i>Envoyer le message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

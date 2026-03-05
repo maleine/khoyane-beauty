@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+
+<section class="py-5 mt-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
+            <li class="breadcrumb-item active"><%= article.titre.substring(0,40) %>...</li>
+          </ol>
+        </nav>
+
+        <span class="blog-cat-badge mb-3 d-inline-block"><%= article.categorie %></span>
+        <h1 class="article-title mb-3"><%= article.titre %></h1>
+        <div class="article-meta mb-4 d-flex gap-4">
+          <span><i class="bi bi-person me-1"></i><%= article.auteur %></span>
+          <span><i class="bi bi-calendar3 me-1"></i><%= new Date(article.created_at).toLocaleDateString('fr-FR') %></span>
+          <span><i class="bi bi-eye me-1"></i><%= article.vues %> vues</span>
+        </div>
+
+        <img src="/images/<%= article.image || 'nail-01.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= article.titre %>" class="img-fluid rounded mb-4 w-100 article-hero-img">
+
+        <div class="article-content">
+          <p><%= article.contenu %></p>
+        </div>
+
+        <div class="article-share mt-5 pt-4 border-top">
+          <h6>Partager cet article :</h6>
+          <a href="#" class="btn btn-sm btn-outline-dark me-2"><i class="bi bi-facebook me-1"></i>Facebook</a>
+          <a href="#" class="btn btn-sm btn-outline-dark me-2"><i class="bi bi-instagram me-1"></i>Instagram</a>
+          <a href="#" class="btn btn-sm btn-outline-dark"><i class="bi bi-twitter-x me-1"></i>Twitter</a>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="sidebar ps-lg-4 mt-5 mt-lg-0">
+          <h5 class="sidebar-title">Articles récents</h5>
+          <% if (recents && recents.length > 0) { %>
+            <% recents.forEach(function(r) { %>
+            <div class="recent-article d-flex gap-3 mb-3">
+              <img src="/images/<%= r.image || 'nail-01.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= r.titre %>" class="recent-img rounded">
+              <div>
+                <a href="/blog/<%= r.id %>" class="recent-title"><%= r.titre %></a>
+                <small class="d-block text-muted"><%= new Date(r.created_at).toLocaleDateString('fr-FR') %></small>
+              </div>
+            </div>
+            <% }) %>
+          <% } %>
+
+          <div class="sidebar-cta mt-4 p-4 rounded">
+            <h6>Prenez rendez-vous</h6>
+            <p class="small">Sublimez vos ongles avec nos experts.</p>
+            <a href="/reservation" class="btn btn-dark btn-sm w-100">Réserver →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,141 @@
+<%- include('layout-top') %>
+
+<!-- Stats cards -->
+<div class="row g-4 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-val"><%= stats.total_reservations || 0 %></div>
+      <div class="stat-lbl">Réservations totales</div>
+      <i class="bi bi-calendar-check text-muted mt-2 d-block"></i>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="border-left-color:#e74c3c">
+      <div class="stat-val"><%= stats.reservations_attente || 0 %></div>
+      <div class="stat-lbl">En attente</div>
+      <i class="bi bi-hourglass text-muted mt-2 d-block"></i>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="border-left-color:#2ecc71">
+      <div class="stat-val"><%= stats.total_services || 0 %></div>
+      <div class="stat-lbl">Services actifs</div>
+      <i class="bi bi-scissors text-muted mt-2 d-block"></i>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="border-left-color:#3498db">
+      <div class="stat-val"><%= stats.total_newsletter || 0 %></div>
+      <div class="stat-lbl">Abonnés newsletter</div>
+      <i class="bi bi-envelope text-muted mt-2 d-block"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Dernières réservations -->
+<div class="bg-white rounded-3 p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h6 class="fw-bold mb-0">Dernières Réservations</h6>
+    <a href="/admin/reservations" class="btn btn-sm btn-outline-dark">Voir tout</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th><th>Client</th><th>Email</th><th>Service</th><th>Date</th><th>Heure</th><th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (dernieres_reservations && dernieres_reservations.length > 0) { %>
+          <% dernieres_reservations.forEach(function(r) { %>
+          <tr>
+            <td><small class="text-muted">#<%= r.id %></small></td>
+            <td><strong><%= r.prenom %> <%= r.nom %></strong></td>
+            <td><small><%= r.email %></small></td>
+            <td><small><%= r.service_nom || 'N/A' %></small></td>
+            <td><small><%= new Date(r.date_rdv).toLocaleDateString('fr-FR') %></small></td>
+            <td><small><%= r.heure_rdv %></small></td>
+            <td>
+              <% if (r.statut === 'confirme') { %>
+                <span class="badge bg-success">Confirmé</span>
+              <% } else if (r.statut === 'annule') { %>
+                <span class="badge bg-danger">Annulé</span>
+              <% } else { %>
+                <span class="badge bg-warning text-dark">En attente</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="7" class="text-center text-muted py-4">Aucune réservation pour le moment.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Dernières commandes -->
+<div class="bg-white rounded-3 p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h6 class="fw-bold mb-0">Dernières Commandes Produits</h6>
+    <a href="/admin/commandes" class="btn btn-sm btn-outline-dark">Voir tout</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Référence</th>
+          <th>Client</th>
+          <th>Téléphone</th>
+          <th>Produits commandés</th>
+          <th>Paiement</th>
+          <th>Total</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (dernieres_commandes && dernieres_commandes.length > 0) { %>
+          <% dernieres_commandes.forEach(function(c) { %>
+          <tr>
+            <td><small class="text-muted fw-bold" style="font-family:monospace;"><%= c.numero %></small></td>
+            <td><strong><%= c.prenom %> <%= c.nom %></strong></td>
+            <td><small><%= c.telephone %></small></td>
+            <td>
+              <% if (c.detail_items) { %>
+                <% c.detail_items.split(' · ').forEach(function(item) { %>
+                  <span class="badge" style="background:#f3eeff;color:#6b4880;font-weight:500;font-size:11px;margin:1px 2px;padding:4px 8px;border-radius:6px;"><%= item %></span>
+                <% }) %>
+              <% } else { %>
+                <span class="text-muted" style="font-size:12px;">—</span>
+              <% } %>
+            </td>
+            <td>
+              <% const payIcons = {especes:'💵',wave:'🔵',orange_money:'🟠',virement:'🏦'}; %>
+              <% const payLabels = {especes:'Espèces',wave:'Wave',orange_money:'Orange Money',virement:'Virement'}; %>
+              <small><%= payIcons[c.mode_paiement] || '' %> <%= payLabels[c.mode_paiement] || c.mode_paiement %></small>
+            </td>
+            <td><strong style="color:#1e1030;"><%= Number(c.montant_total).toLocaleString('fr-FR') %> F</strong></td>
+            <td>
+              <% if (c.statut === 'livree') { %>
+                <span class="badge bg-success">Livrée</span>
+              <% } else if (c.statut === 'payee') { %>
+                <span class="badge bg-primary">Payée</span>
+              <% } else if (c.statut === 'confirmee') { %>
+                <span class="badge" style="background:#d4187f;color:#fff;">Confirmée</span>
+              <% } else if (c.statut === 'annulee') { %>
+                <span class="badge bg-danger">Annulée</span>
+              <% } else { %>
+                <span class="badge bg-warning text-dark">En attente</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="7" class="text-center text-muted py-4">Aucune commande pour le moment.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('layout-bottom') %>

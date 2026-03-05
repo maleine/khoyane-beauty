@@ -1,0 +1,698 @@
+<%- include('partials/header') %>
+
+<!-- ══════════════════════════════════════════
+     HERO — image sans texte (nail-_XX_.jpg)
+══════════════════════════════════════════ -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <img src="/images/nail-_21_.jpg" alt="Boutique Super Beauty Market" class="page-hero-bg"
+       onerror="this.onerror=null;this.src='/images/nail-21.jpg'">
+  <div class="page-hero-content text-center">
+    <p class="section-pre gold">boutique</p>
+    <h1 class="page-hero-title">NOS PRODUITS</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center">
+        <li class="breadcrumb-item"><a href="/" class="text-white">Accueil</a></li>
+        <li class="breadcrumb-item active text-white-50">Produits</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="page-hero-watermark">Super Beauty Market</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     BARRE PANIER FIXE (apparaît quand items)
+══════════════════════════════════════════ -->
+<div id="cartBar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:600;
+  background:#fff;border-top:1px solid #e8dff0;
+  box-shadow:0 -2px 12px rgba(30,16,48,0.10);padding:10px 0;">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="position:relative;">
+        <i class="bi bi-bag" style="font-size:1.4rem;color:#6b4880;"></i>
+        <span id="cartCountBadge" style="position:absolute;top:-5px;right:-7px;background:#d4187f;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;">0</span>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#aaa;letter-spacing:1px;text-transform:uppercase;">Panier</div>
+        <div style="font-size:1rem;font-weight:700;color:#1e1030;">
+          <span id="cartTotalBar">0</span> <span style="font-size:11px;color:#999;">FCFA</span>
+        </div>
+      </div>
+    </div>
+    <button onclick="openModal()" style="background:#1e1030;color:#fff;border:none;border-radius:8px;
+      padding:10px 24px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+      cursor:pointer;transition:background 0.2s;"
+      onmouseover="this.style.background='#6b4880'"
+      onmouseout="this.style.background='#1e1030'">
+      Voir mon panier →
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION PRINCIPALE
+══════════════════════════════════════════ -->
+<section class="py-5" style="background:#fdf9ff;padding-bottom:100px !important;">
+  <div class="container">
+
+    <!-- En-tête + badges paiement -->
+    <div class="text-center mb-5">
+      <p class="section-pre gold">sélection premium</p>
+      <h2 class="section-title">COSMÉTIQUES & SOINS ONGLES</h2>
+      <p class="text-muted" style="font-size:14px;max-width:580px;margin:12px auto 0;line-height:1.7;">
+        Produits disponibles à l'achat. Payez par espèces, Wave, Orange Money ou virement bancaire.
+      </p>
+
+      <!-- Modes de paiement -->
+      <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:20px;">
+        <div class="pay-chip"><span>💵</span> Espèces</div>
+        <div class="pay-chip wave-chip">
+          <img src="/images/wave-logo.webp" alt="Wave" style="height:16px;object-fit:contain;">
+          Wave
+        </div>
+        <div class="pay-chip om-chip">
+          <img src="/images/orange-money-logo.webp" alt="Orange Money" style="height:16px;object-fit:contain;">
+          Orange Money
+        </div>
+        <div class="pay-chip"><span>🏦</span> Virement bancaire</div>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="produits-filters mb-4">
+      <div class="produits-search-wrap">
+        <i class="bi bi-search produits-search-icon"></i>
+        <input type="text" id="searchProduit" placeholder="Rechercher un produit…"
+               class="produits-search-input" oninput="filterProduits()">
+      </div>
+      <div class="produits-cats" id="catButtons">
+        <button class="cat-btn active" data-cat="tous" onclick="setCat(this,'tous')">Tous</button>
+        <button class="cat-btn" data-cat="vernis" onclick="setCat(this,'vernis')"><i class="bi bi-droplet me-1"></i>Vernis</button>
+        <button class="cat-btn" data-cat="soins"  onclick="setCat(this,'soins')"><i class="bi bi-heart me-1"></i>Soins</button>
+        <button class="cat-btn" data-cat="outils" onclick="setCat(this,'outils')"><i class="bi bi-tools me-1"></i>Outils</button>
+        <button class="cat-btn" data-cat="deco"   onclick="setCat(this,'deco')"><i class="bi bi-stars me-1"></i>Déco</button>
+        <button class="cat-btn" data-cat="beaute" onclick="setCat(this,'beaute')"><i class="bi bi-gem me-1"></i>Beauté</button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span id="resultCount" class="result-count"></span>
+      <span style="font-size:11px;color:#bbb;letter-spacing:2px;text-transform:uppercase;">Super Beauty Market</span>
+    </div>
+
+    <!-- Grille produits -->
+    <div class="row g-4" id="produitsGrid">
+      <% if (produits && produits.length > 0) { %>
+        <% produits.forEach(function(p, idx) {
+             const hasRemise  = p.remise_type && p.remise_type !== 'none' && p.remise_valeur > 0;
+             const prixFinal  = hasRemise
+               ? (p.remise_type === 'pourcentage' ? p.prix * (1 - p.remise_valeur/100) : p.prix - p.remise_valeur)
+               : p.prix;
+        %>
+        <div class="col-6 col-md-4 col-lg-3 produit-item reveal-fade"
+             style="transition-delay:<%= idx * 0.05 %>s"
+             data-nom="<%= p.nom.toLowerCase() %>"
+             data-desc="<%= (p.description||'').toLowerCase() %>"
+             data-cat="<%= (p.categorie||'beaute').toLowerCase() %>">
+
+          <div class="product-card h-100">
+
+            <!-- Badges positionnés -->
+            <% if (hasRemise) { %>
+            <div class="pcard-badge sale">
+              -<%= p.remise_type === 'pourcentage' ? Math.round(p.remise_valeur)+'%' : Number(p.remise_valeur).toLocaleString('fr-FR')+'F' %>
+            </div>
+            <% } %>
+            <% if (p.stock <= 0) { %>
+            <div class="pcard-badge rupture">Rupture</div>
+            <% } else if (p.stock > 0 && p.stock <= 5) { %>
+            <div class="pcard-badge warning">Dernières pièces</div>
+            <% } %>
+
+            <div class="product-img-wrap">
+              <img src="/images/<%= p.image || 'nail-01.jpg' %>" alt="<%= p.nom %>"
+                   class="product-img" onerror="this.onerror=null;this.src='/images/nail-01.jpg'">
+
+              <!-- Overlay bouton ajouter -->
+              <% if (p.stock > 0) { %>
+              <div class="pcard-hover">
+                <button class="pcard-add-btn"
+                  onclick='addToCart(<%= JSON.stringify({id:p.id, nom:p.nom, prix:prixFinal, image:p.image||"nail-01.jpg"}) %>)'>
+                  <i class="bi bi-cart-plus me-2"></i>Ajouter au panier
+                </button>
+              </div>
+              <% } else { %>
+              <div class="pcard-hover" style="cursor:default;">
+                <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:1px;">RUPTURE DE STOCK</span>
+              </div>
+              <% } %>
+            </div>
+
+            <div class="product-body p-3">
+              <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8e6db0;font-weight:700;margin-bottom:4px;">
+                <%= p.categorie || 'Beauté' %>
+              </div>
+              <h6 style="font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:400;
+                          color:#1e1030;line-height:1.35;margin:0 0 6px;">
+                <%= p.nom %>
+              </h6>
+              <p style="font-size:11px;color:#999;line-height:1.55;margin-bottom:10px;min-height:32px;">
+                <%= p.description ? p.description.substring(0,60)+(p.description.length>60?'…':'') : '' %>
+              </p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <% if (hasRemise) { %>
+                  <div style="font-size:11px;color:#ccc;text-decoration:line-through;line-height:1;">
+                    <%= Number(p.prix).toLocaleString('fr-FR') %> F
+                  </div>
+                  <div style="font-family:'Playfair Display',serif;font-size:1.05rem;color:#d4187f;font-weight:700;">
+                    <%= Number(prixFinal).toLocaleString('fr-FR') %> <small style="font-size:9px;color:#bbb;font-family:'Jost',sans-serif;">FCFA</small>
+                  </div>
+                  <% } else { %>
+                  <div style="font-family:'Playfair Display',serif;font-size:1.05rem;color:#8e6db0;">
+                    <%= Number(prixFinal).toLocaleString('fr-FR') %> <small style="font-size:9px;color:#bbb;font-family:'Jost',sans-serif;">FCFA</small>
+                  </div>
+                  <% } %>
+                </div>
+
+                <% if (p.stock > 0) { %>
+                <button class="pcard-quick-add"
+                  onclick='addToCart(<%= JSON.stringify({id:p.id, nom:p.nom, prix:prixFinal, image:p.image||"nail-01.jpg"}) %>)'
+                  title="Ajouter au panier">
+                  <i class="bi bi-cart-plus"></i>
+                </button>
+                <% } else { %>
+                <span style="font-size:10px;color:#e74c3c;"><i class="bi bi-x-circle"></i></span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <div id="noResults" style="display:none;text-align:center;padding:60px 0;">
+      <div style="font-size:3rem;margin-bottom:12px;">🔍</div>
+      <p class="text-muted">Aucun produit trouvé pour cette recherche.</p>
+      <button onclick="resetFilters()" class="btn btn-sm btn-outline-dark" style="border-radius:0;font-size:11px;letter-spacing:1px;">Voir tous les produits</button>
+    </div>
+
+    <% if (!produits || produits.length === 0) { %>
+    <div class="col-12 text-center py-5">
+      <i class="bi bi-bag fs-1 text-muted"></i>
+      <p class="text-muted mt-3">Produits bientôt disponibles.</p>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MODAL PANIER + CHECKOUT
+══════════════════════════════════════════ -->
+<div id="shopModal" onclick="if(event.target===this)closeModal()"
+  style="display:none;position:fixed;inset:0;background:rgba(10,4,22,0.55);
+  z-index:2000;overflow-y:auto;padding:20px 16px;">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;
+    overflow:hidden;box-shadow:0 8px 40px rgba(30,16,48,0.18);" id="shopModalBox">
+
+    <!-- ── ÉTAPE 1 : PANIER ── -->
+    <div id="step1">
+      <div style="background:#faf8fc;border-bottom:1px solid #ede5f7;padding:18px 24px;
+        display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <i class="bi bi-bag" style="font-size:1.3rem;color:#6b4880;"></i>
+          <h5 style="font-size:1rem;font-weight:700;color:#1e1030;margin:0;">Mon Panier</h5>
+        </div>
+        <button onclick="closeModal()" style="background:none;border:none;color:#aaa;
+          width:32px;height:32px;font-size:18px;cursor:pointer;border-radius:50%;
+          display:flex;align-items:center;justify-content:center;transition:background 0.2s;"
+          onmouseover="this.style.background='#f0e8f8'" onmouseout="this.style.background='none'">×</button>
+      </div>
+
+      <div id="cartItemsEl" style="padding:16px 24px;max-height:320px;overflow-y:auto;"></div>
+
+      <div style="padding:14px 24px;border-top:1px solid #f0eaf8;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <span style="font-size:13px;color:#777;">Total</span>
+          <span id="modalTotal" style="font-size:1.2rem;color:#1e1030;font-weight:700;"></span>
+        </div>
+        <button onclick="goStep(2)" style="width:100%;background:#1e1030;
+          color:#fff;border:none;border-radius:8px;padding:13px;font-size:12px;
+          font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;"
+          onmouseover="this.style.background='#6b4880'"
+          onmouseout="this.style.background='#1e1030'">
+          Passer commande →
+        </button>
+        <button onclick="closeModal()" style="width:100%;background:none;border:none;
+          color:#bbb;font-size:12px;margin-top:8px;cursor:pointer;letter-spacing:1px;">
+          Continuer mes achats
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ÉTAPE 2 : CHECKOUT ── -->
+    <div id="step2" style="display:none;">
+      <div style="background:#faf8fc;border-bottom:1px solid #ede5f7;padding:18px 24px;
+        display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:10px;color:#aaa;letter-spacing:1px;text-transform:uppercase;">Étape 2 / 3</span>
+          <h5 style="font-size:1rem;font-weight:700;color:#1e1030;margin:2px 0 0;">
+            Vos informations
+          </h5>
+        </div>
+        <button onclick="closeModal()" style="background:none;border:none;color:#aaa;
+          width:32px;height:32px;font-size:18px;cursor:pointer;border-radius:50%;
+          display:flex;align-items:center;justify-content:center;transition:background 0.2s;"
+          onmouseover="this.style.background='#f0e8f8'" onmouseout="this.style.background='none'">×</button>
+      </div>
+
+      <div style="padding:24px 28px;max-height:80vh;overflow-y:auto;">
+
+        <!-- Champs infos -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div>
+            <label class="flabel">Prénom *</label>
+            <input id="f_prenom" type="text" class="finput" placeholder="Aminata">
+          </div>
+          <div>
+            <label class="flabel">Nom *</label>
+            <input id="f_nom" type="text" class="finput" placeholder="Diallo">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div>
+            <label class="flabel">Téléphone Sénégal *</label>
+            <div style="display:flex;border:1.5px solid #e0d0ee;border-radius:8px;overflow:hidden;background:#f9f3fd;">
+              <span style="padding:10px 10px;color:#8e6db0;font-size:12px;font-weight:700;
+                border-right:1px solid #e0d0ee;white-space:nowrap;background:rgba(142,109,176,0.06);">+221</span>
+              <input id="f_telephone" type="tel" style="flex:1;border:none;background:transparent;
+                padding:10px 12px;font-size:13px;outline:none;" placeholder="7X XXX XX XX">
+            </div>
+          </div>
+          <div>
+            <label class="flabel">Email</label>
+            <input id="f_email" type="email" class="finput" placeholder="votre@email.com">
+          </div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <label class="flabel">Adresse de livraison (optionnel)</label>
+          <input id="f_adresse" type="text" class="finput" placeholder="Quartier, Commune, Dakar…">
+        </div>
+
+        <!-- Modes de paiement -->
+        <div style="margin-bottom:20px;">
+          <label class="flabel" style="display:block;margin-bottom:12px;">Mode de paiement *</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+            <label class="payopt" id="opt-especes">
+              <input type="radio" name="pay" value="especes" style="display:none" onchange="onPayChange('especes')">
+              <span style="font-size:1.6rem;">💵</span>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#1e1030;">Espèces</div>
+                <div style="font-size:10px;color:#aaa;">À la livraison / en salon</div>
+              </div>
+            </label>
+
+            <label class="payopt" id="opt-wave">
+              <input type="radio" name="pay" value="wave" style="display:none" onchange="onPayChange('wave')">
+              <img src="/images/wave-logo.webp" alt="Wave" style="height:26px;object-fit:contain;flex-shrink:0;">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#1e1030;">Wave</div>
+                <div style="font-size:10px;color:#aaa;">Paiement mobile</div>
+              </div>
+            </label>
+
+            <label class="payopt" id="opt-orange_money">
+              <input type="radio" name="pay" value="orange_money" style="display:none" onchange="onPayChange('orange_money')">
+              <img src="/images/orange-money-logo.webp" alt="Orange Money" style="height:26px;object-fit:contain;flex-shrink:0;">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#1e1030;">Orange Money</div>
+                <div style="font-size:10px;color:#aaa;">Paiement mobile</div>
+              </div>
+            </label>
+
+            <label class="payopt" id="opt-virement">
+              <input type="radio" name="pay" value="virement" style="display:none" onchange="onPayChange('virement')">
+              <span style="font-size:1.6rem;">🏦</span>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#1e1030;">Virement</div>
+                <div style="font-size:10px;color:#aaa;">Virement bancaire</div>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+        <!-- Info Wave -->
+        <div id="info-wave" style="display:none;background:linear-gradient(135deg,#e8f8ff,#d0f0fb);
+          border-radius:10px;padding:14px;margin-bottom:14px;border-left:3px solid #00b4f1;">
+          <div style="font-size:10px;font-weight:700;color:#0090c2;letter-spacing:2px;margin-bottom:6px;">NUMÉRO WAVE SUPER BEAUTY MARKET</div>
+          <div style="font-size:1.1rem;font-weight:700;color:#006d9b;">+221 78 247 81 47</div>
+          <div style="font-size:11px;color:#555;margin-top:6px;">Envoyez le montant exact puis entrez la référence Wave ci-dessous.</div>
+          <input id="f_ref_wave" type="text" class="finput" style="margin-top:10px;" placeholder="Référence Wave (ex: WV7654321)">
+        </div>
+
+        <!-- Info Orange Money -->
+        <div id="info-orange_money" style="display:none;background:linear-gradient(135deg,#fff5e8,#fde8c8);
+          border-radius:10px;padding:14px;margin-bottom:14px;border-left:3px solid #f60;">
+          <div style="font-size:10px;font-weight:700;color:#f60;letter-spacing:2px;margin-bottom:6px;">NUMÉRO ORANGE MONEY SUPER BEAUTY MARKET</div>
+          <div style="font-size:1.1rem;font-weight:700;color:#c25000;">+221 78 136 53 58</div>
+          <div style="font-size:11px;color:#555;margin-top:6px;">Envoyez le montant exact puis entrez la référence Orange Money ci-dessous.</div>
+          <input id="f_ref_om" type="text" class="finput" style="margin-top:10px;" placeholder="Référence Orange Money (ex: OM1234567)">
+        </div>
+
+        <!-- Info Virement -->
+        <div id="info-virement" style="display:none;background:#f8f9fa;border-radius:10px;
+          padding:14px;margin-bottom:14px;border-left:3px solid #aaa;">
+          <div style="font-size:10px;font-weight:700;color:#666;letter-spacing:2px;margin-bottom:8px;">COORDONNÉES BANCAIRES</div>
+          <div style="font-family:monospace;font-size:12px;color:#333;line-height:2;">
+            Banque : <strong>BICIS / Ecobank Sénégal</strong><br>
+            Bénéficiaire : <strong>Super Beauty Market</strong><br>
+            Motif : <strong>Commande produits</strong>
+          </div>
+          <div style="font-size:11px;color:#999;margin-top:8px;">Votre commande sera traitée dès réception du virement.</div>
+        </div>
+
+        <!-- Note -->
+        <div style="margin-bottom:20px;">
+          <label class="flabel">Note / précisions (optionnel)</label>
+          <textarea id="f_notes" class="finput" rows="2" style="resize:none;"
+            placeholder="Ex: livraison en soirée, couleur souhaitée…"></textarea>
+        </div>
+
+        <!-- Récap commande -->
+        <div style="background:#fdf9ff;border-radius:10px;padding:14px;border:1px solid #f0e6f6;margin-bottom:16px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#8e6db0;margin-bottom:10px;">RÉCAPITULATIF</div>
+          <div id="checkoutSummary" style="font-size:12px;color:#666;line-height:2.2;"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;
+            border-top:1px solid #f0e6f6;padding-top:10px;margin-top:8px;">
+            <span style="font-size:13px;font-weight:600;color:#333;">Total à payer</span>
+            <span id="checkoutTotalEl" style="font-family:'Playfair Display',serif;
+              font-size:1.25rem;color:#d4187f;font-weight:700;"></span>
+          </div>
+        </div>
+
+        <button id="submitBtn" onclick="submitOrder()"
+          style="width:100%;background:#1e1030;
+          color:#fff;border:none;border-radius:8px;padding:13px;font-size:12px;
+          font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;"
+          onmouseover="this.style.background='#6b4880'"
+          onmouseout="this.style.background='#1e1030'">
+          ✓ Confirmer la commande
+        </button>
+        <button onclick="goStep(1)" style="width:100%;background:none;border:none;
+          color:#bbb;font-size:12px;margin-top:10px;cursor:pointer;letter-spacing:1px;">
+          ← Retour au panier
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ÉTAPE 3 : CONFIRMATION ── -->
+    <div id="step3" style="display:none;text-align:center;padding:52px 28px;">
+      <div style="font-size:4.5rem;margin-bottom:16px;animation:bounceIn 0.5s cubic-bezier(0.16,1,0.3,1);">✅</div>
+      <h4 style="font-family:'Playfair Display',serif;font-style:italic;
+        color:#1e1030;font-size:1.7rem;margin-bottom:8px;">Commande confirmée !</h4>
+      <p style="color:#aaa;font-size:12px;margin-bottom:4px;">Numéro de commande</p>
+      <div id="confNumero" style="font-family:monospace;font-size:1.2rem;font-weight:700;
+        color:#8e6db0;background:#f3e5f5;padding:8px 20px;border-radius:8px;
+        display:inline-block;margin-bottom:20px;letter-spacing:3px;"></div>
+      <p id="confMessage" style="color:#555;font-size:13px;line-height:1.75;
+        max-width:420px;margin:0 auto 24px;"></p>
+      <div style="background:#fdf0fb;border-radius:12px;padding:16px 20px;margin-bottom:24px;display:inline-block;">
+        <div style="font-size:10px;font-weight:700;color:#8e6db0;letter-spacing:2px;margin-bottom:10px;">NOUS CONTACTER</div>
+        <a href="tel:+221782478147" style="display:block;color:#1e1030;font-weight:700;font-size:14px;text-decoration:none;">
+          📞 +221 78 247 81 47
+        </a>
+        <a href="https://wa.me/221782478147" target="_blank"
+          style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+          background:#25D366;color:#fff;padding:8px 20px;border-radius:6px;
+          font-size:12px;text-decoration:none;font-weight:600;">
+          <i class="bi bi-whatsapp"></i> WhatsApp
+        </a>
+      </div>
+      <br>
+      <button onclick="closeModal();resetCart();"
+        style="background:linear-gradient(135deg,#1e1030,#6b4880);color:#fff;
+        border:none;border-radius:8px;padding:12px 32px;font-size:12px;
+        font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">
+        Fermer
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     STYLES PRODUITS PAGE
+══════════════════════════════════════════ -->
+<style>
+.pay-chip { display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #e0d0ee;
+  border-radius:20px;padding:6px 14px;font-size:11px;font-weight:600;color:#555;letter-spacing:0.5px;
+  box-shadow:0 2px 10px rgba(142,109,176,0.08); }
+.wave-chip { border-color:#00b4f1;color:#0090c2; }
+.om-chip { border-color:#f60;color:#cc4400; }
+
+.pcard-badge { position:absolute;z-index:3;font-size:9px;font-weight:800;
+  letter-spacing:1px;padding:4px 9px;border-radius:4px;text-transform:uppercase; }
+.pcard-badge.sale { top:10px;right:10px;background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff; }
+.pcard-badge.rupture { top:10px;left:10px;background:rgba(231,76,60,0.92);color:#fff; }
+.pcard-badge.warning { top:10px;left:10px;background:rgba(230,126,34,0.92);color:#fff; }
+
+.pcard-hover { position:absolute;inset:0;background:rgba(30,16,48,0.72);display:flex;
+  align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;backdrop-filter:blur(3px); }
+.product-img-wrap:hover .pcard-hover { opacity:1; }
+.pcard-add-btn { background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff;border:none;
+  border-radius:8px;padding:11px 22px;font-size:11px;font-weight:800;letter-spacing:1.5px;
+  text-transform:uppercase;cursor:pointer;transition:transform 0.15s; }
+.pcard-add-btn:hover { transform:scale(1.06); }
+
+.pcard-quick-add { width:36px;height:36px;border-radius:8px;border:none;flex-shrink:0;
+  background:linear-gradient(135deg,#1e1030,#6b4880);color:#fff;font-size:16px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s; }
+.pcard-quick-add:hover { transform:scale(1.12);box-shadow:0 4px 12px rgba(30,16,48,0.3); }
+
+.flabel { display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:#999;font-weight:700;margin-bottom:6px; }
+.finput { width:100%;padding:10px 14px;border:1.5px solid #e0d0ee;border-radius:8px;
+  font-size:13px;color:#333;background:#f9f3fd;outline:none;transition:all 0.2s;box-sizing:border-box; }
+.finput:focus { border-color:#8e6db0;background:#fff;box-shadow:0 0 0 3px rgba(142,109,176,0.12); }
+
+.payopt { display:flex;align-items:center;gap:12px;padding:14px;border:2px solid #e0d0ee;
+  border-radius:10px;cursor:pointer;transition:all 0.2s;background:#fff;user-select:none; }
+.payopt:hover { border-color:#8e6db0;background:#fdf9ff; }
+.payopt.selected { border-color:#d4187f;background:linear-gradient(135deg,#fdf0fb,#f3e5f5); }
+
+.cart-row { display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0e6f6; }
+.cart-row:last-child { border:none; }
+
+@keyframes bounceIn { 0%{transform:scale(0)} 70%{transform:scale(1.18)} 100%{transform:scale(1)} }
+</style>
+
+<!-- ══════════════════════════════════════════
+     LOGIQUE PANIER + COMMANDE
+══════════════════════════════════════════ -->
+<script>
+/* ── État panier ── */
+let cart = JSON.parse(sessionStorage.getItem('kb_cart') || '[]');
+let payMode = '';
+
+const saveCart = () => sessionStorage.setItem('kb_cart', JSON.stringify(cart));
+
+function addToCart(prod) {
+  const ex = cart.find(i => i.id === prod.id);
+  if (ex) ex.quantite++;
+  else cart.push({ ...prod, quantite: 1 });
+  saveCart();
+  updateBarUI();
+  showAddedToast(prod.nom);
+}
+
+function removeItem(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart(); updateBarUI(); renderCartRows();
+}
+function changeQty(id, d) {
+  const it = cart.find(i => i.id === id);
+  if (it) { it.quantite = Math.max(1, it.quantite + d); saveCart(); updateBarUI(); renderCartRows(); }
+}
+
+const totalVal  = () => cart.reduce((s, i) => s + i.prix * i.quantite, 0);
+const totalCount = () => cart.reduce((s, i) => s + i.quantite, 0);
+
+function updateBarUI() {
+  const n = totalCount();
+  document.getElementById('cartCountBadge').textContent = n;
+  document.getElementById('cartTotalBar').textContent = Number(totalVal()).toLocaleString('fr-FR');
+  document.getElementById('cartBar').style.display = n > 0 ? 'block' : 'none';
+}
+
+function renderCartRows() {
+  const el = document.getElementById('cartItemsEl');
+  if (!cart.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px 0;color:#ccc;"><div style="font-size:2.5rem;margin-bottom:8px;">🛒</div>Votre panier est vide</div>';
+    document.getElementById('modalTotal').textContent = '0 FCFA';
+    return;
+  }
+  el.innerHTML = cart.map(it => `
+    <div class="cart-row">
+      <img src="/images/${it.image}" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.src='/images/nail-01.jpg'">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;color:#1e1030;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${it.nom}</div>
+        <div style="font-size:12px;color:#8e6db0;font-weight:600;">${Number(it.prix).toLocaleString('fr-FR')} FCFA</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <button onclick="changeQty(${it.id},-1)" style="width:26px;height:26px;border-radius:50%;border:1px solid #e0d0ee;background:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;color:#555;">−</button>
+        <span style="font-size:13px;font-weight:700;min-width:20px;text-align:center;">${it.quantite}</span>
+        <button onclick="changeQty(${it.id},1)"  style="width:26px;height:26px;border-radius:50%;border:1px solid #e0d0ee;background:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;color:#555;">+</button>
+        <button onclick="removeItem(${it.id})"   style="width:26px;height:26px;border-radius:50%;border:none;background:#fdf0f0;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;color:#e74c3c;margin-left:2px;">🗑</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('modalTotal').textContent = Number(totalVal()).toLocaleString('fr-FR') + ' FCFA';
+}
+
+function openModal() {
+  renderCartRows();
+  goStep(1);
+  document.getElementById('shopModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('shopModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function goStep(n) {
+  [1,2,3].forEach(i => document.getElementById('step'+i).style.display = 'none');
+  document.getElementById('step'+n).style.display = '';
+  if (n === 2) {
+    // Préremplir récap
+    document.getElementById('checkoutSummary').innerHTML =
+      cart.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.nom} ×${i.quantite}</span><span style="font-weight:600;">${Number(i.prix*i.quantite).toLocaleString('fr-FR')} F</span></div>`).join('');
+    document.getElementById('checkoutTotalEl').textContent = Number(totalVal()).toLocaleString('fr-FR') + ' FCFA';
+    payMode = '';
+    document.querySelectorAll('.payopt').forEach(o => o.classList.remove('selected'));
+    ['wave','orange_money','virement'].forEach(k => { const el = document.getElementById('info-'+k); if(el) el.style.display='none'; });
+  }
+  // Scroll to top of modal
+  document.getElementById('shopModalBox').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function onPayChange(mode) {
+  payMode = mode;
+  document.querySelectorAll('.payopt').forEach(o => o.classList.remove('selected'));
+  const sel = document.getElementById('opt-'+mode);
+  if (sel) sel.classList.add('selected');
+  ['wave','orange_money','virement'].forEach(k => {
+    const el = document.getElementById('info-'+k);
+    if (el) el.style.display = (k === mode) ? '' : 'none';
+  });
+}
+
+async function submitOrder() {
+  const prenom = document.getElementById('f_prenom').value.trim();
+  const nom    = document.getElementById('f_nom').value.trim();
+  const tel    = document.getElementById('f_telephone').value.trim();
+
+  if (!prenom || !nom || !tel) { alert('Veuillez remplir les champs : prénom, nom et téléphone.'); return; }
+  if (!payMode)                { alert('Veuillez choisir un mode de paiement.'); return; }
+  if (!cart.length)            { alert('Votre panier est vide.'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Envoi…';
+
+  let ref = '';
+  if (payMode === 'wave')         ref = document.getElementById('f_ref_wave')?.value?.trim() || '';
+  if (payMode === 'orange_money') ref = document.getElementById('f_ref_om')?.value?.trim()   || '';
+
+  try {
+    const resp = await fetch('/commandes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prenom, nom,
+        telephone: '+221 ' + tel.replace(/\D/g,''),
+        email:    document.getElementById('f_email').value.trim()   || '',
+        adresse:  document.getElementById('f_adresse').value.trim() || '',
+        mode_paiement: payMode,
+        ref_paiement:  ref,
+        notes: document.getElementById('f_notes').value.trim() || '',
+        items: JSON.stringify(cart)
+      })
+    });
+    const data = await resp.json();
+
+    if (data.success) {
+      const labels = { especes:'en espèces (à la livraison ou en salon)', wave:'par Wave 📲', orange_money:'par Orange Money 📱', virement:'par virement bancaire 🏦' };
+      document.getElementById('confNumero').textContent  = data.numero;
+      document.getElementById('confMessage').innerHTML   =
+        `Merci <strong>${prenom}</strong> ! Votre commande de <strong>${Number(data.total).toLocaleString('fr-FR')} FCFA</strong> a bien été reçue.<br>
+         Paiement : <strong>${labels[payMode]}</strong>.<br><br>
+         Notre équipe vous contactera rapidement pour confirmer et organiser la livraison. 💜`;
+      goStep(3);
+    } else {
+      alert('Erreur : ' + (data.error || 'Réessayez'));
+      btn.disabled = false; btn.textContent = '✓ Confirmer la commande';
+    }
+  } catch(e) {
+    alert('Erreur réseau. Vérifiez votre connexion et réessayez.');
+    btn.disabled = false; btn.textContent = '✓ Confirmer la commande';
+  }
+}
+
+function resetCart() {
+  cart = []; saveCart(); updateBarUI();
+}
+
+function showAddedToast(nom) {
+  let t = document.querySelector('.kb-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.className = 'kb-toast';
+    t.style.cssText = `position:fixed;top:80px;right:20px;z-index:9999;
+      background:linear-gradient(135deg,#1e1030,#6b4880);color:#fff;
+      padding:12px 20px;border-radius:10px;font-size:13px;max-width:280px;
+      box-shadow:0 8px 30px rgba(30,16,48,0.3);transform:translateX(130%);
+      transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);`;
+    document.body.appendChild(t);
+  }
+  t.innerHTML = `<i class="bi bi-cart-check me-2"></i><strong>${nom.substring(0,28)}</strong> ajouté !`;
+  t.style.transform = 'translateX(0)';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.transform = 'translateX(130%)'; }, 2600);
+}
+
+/* ── Filtres catalogue ── */
+let currentCat = 'tous';
+function filterProduits() {
+  const s = document.getElementById('searchProduit').value.toLowerCase().trim();
+  let n = 0;
+  document.querySelectorAll('.produit-item').forEach(el => {
+    const ok = (!s || el.dataset.nom.includes(s) || el.dataset.desc.includes(s))
+            && (currentCat === 'tous' || el.dataset.cat === currentCat);
+    el.style.display = ok ? '' : 'none';
+    if (ok) n++;
+  });
+  document.getElementById('resultCount').textContent = n + ' produit' + (n > 1 ? 's' : '') + ' trouvé' + (n > 1 ? 's' : '');
+  document.getElementById('noResults').style.display = n === 0 ? 'block' : 'none';
+}
+function setCat(btn, cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('searchProduit').value = '';
+  filterProduits();
+}
+function resetFilters() {
+  currentCat = 'tous';
+  document.getElementById('searchProduit').value = '';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-cat="tous"]').classList.add('active');
+  filterProduits();
+}
+
+document.addEventListener('DOMContentLoaded', () => { updateBarUI(); filterProduits(); });
+</script>
+
+<%- include('partials/footer') %>

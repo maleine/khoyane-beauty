@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <img src="/images/nail-_05_.jpg" alt="Blog" class="page-hero-bg" onerror="this.onerror=null; this.src='/images/nail-01.jpg'">
+  <div class="page-hero-content text-center">
+    <p class="section-pre gold">actualités</p>
+    <h1 class="page-hero-title">NOTRE BLOG</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center">
+        <li class="breadcrumb-item"><a href="/" class="text-white">Accueil</a></li>
+        <li class="breadcrumb-item active text-white-50">Blog</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="blog-wrapper">
+      <div class="row g-4">
+        <% if (articles && articles.length > 0) { %>
+          <% articles.forEach(function(a) { %>
+          <div class="col-md-6 col-lg-4">
+            <div class="blog-card h-100">
+              <div class="blog-card-img-wrap">
+                <img src="/images/<%= a.image || 'nail-01.jpg' %>" onerror="this.onerror=null; this.src='/images/nail-01.jpg'"  alt="<%= a.titre %>" class="blog-card-img">
+                <span class="blog-cat-badge"><%= a.categorie || 'MANICURE' %></span>
+              </div>
+              <div class="blog-card-body p-4">
+                <h5 class="blog-title"><a href="/blog/<%= a.id %>"><%= a.titre %></a></h5>
+                <p class="blog-excerpt"><%= a.contenu.substring(0, 120) %>...</p>
+                <div class="blog-meta d-flex gap-3 mt-3">
+                  <small><i class="bi bi-calendar3 me-1"></i><%= new Date(a.created_at).toLocaleDateString('fr-FR') %></small>
+                  <small><i class="bi bi-eye me-1"></i><%= a.vues %></small>
+                  <small><i class="bi bi-chat me-1"></i><%= a.commentaires %></small>
+                </div>
+                <a href="/blog/<%= a.id %>" class="btn btn-link p-0 mt-2 read-more">Lire la suite →</a>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        <% } else { %>
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-journal-text fs-1 text-muted"></i>
+            <p class="text-muted mt-3">Aucun article disponible pour le moment.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
