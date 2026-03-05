@@ -3,14 +3,14 @@
 =================================== */
 
 :root {
-  --gold: #8e6db0;
-  --gold-light: #f5eefe;
-  --dark: #1e1030;
-  --light-bg: #fdf9ff;
+  --gold: #a07cc0;
+  --gold-light: #f7f0ff;
+  --dark: #2d1f45;
+  --light-bg: #fdfaff;
   --pink-bg: #fce4ec;
-  --accent: #d4187f;
-  --violet: #6b4880;
-  --rose: #d4187f;
+  --accent: #c94d9a;
+  --violet: #8860a8;
+  --rose: #c94d9a;
   --font-display: 'Playfair Display', 'Cormorant Garamond', serif;
   --font-script: 'Pinyon Script', 'Dancing Script', cursive;
   --font-body: 'Jost', sans-serif;
@@ -92,7 +92,7 @@ body {
   justify-content: center;
 }
 .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-.hero-overlay { position: absolute; inset: 0; background: rgba(30,16,48,0.6); }
+.hero-overlay { position: absolute; inset: 0; background: rgba(45,31,69,0.6); }
 .hero-content { position: relative; z-index: 2; text-align: center; color: #fff; }
 .hero-subtitle {
   font-family: 'Pinyon Script', 'Dancing Script', cursive;
@@ -100,7 +100,7 @@ body {
   color: var(--gold);
   display: block;
   margin-bottom: -16px;
-  text-shadow: 0 2px 20px rgba(142,109,176,0.4);
+  text-shadow: 0 2px 20px rgba(160,124,192,0.4);
 }
 .hero-title {
   font-family: 'Playfair Display', serif;
@@ -435,7 +435,7 @@ body {
   font-size: 13px;
   padding: 10px 16px;
 }
-.form-control:focus, .form-select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(142,109,176,0.15); }
+.form-control:focus, .form-select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(160,124,192,0.15); }
 .info-box { background: var(--light-bg); border-radius: 8px; }
 
 /* ===== CONTACT ===== */
@@ -547,7 +547,7 @@ body {
   white-space: nowrap;
   pointer-events: none;
   z-index: 1;
-  text-shadow: 0 2px 30px rgba(142,109,176,0.2);
+  text-shadow: 0 2px 30px rgba(160,124,192,0.2);
   letter-spacing: 4px;
 }
 
@@ -568,7 +568,7 @@ body {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #8e6db0;
+  color: #a07cc0;
   font-size: 14px;
 }
 .produits-search-input {
@@ -583,8 +583,8 @@ body {
   background: #fdf9ff;
 }
 .produits-search-input:focus {
-  border-color: #8e6db0;
-  box-shadow: 0 0 0 3px rgba(142,109,176,0.1);
+  border-color: #a07cc0;
+  box-shadow: 0 0 0 3px rgba(160,124,192,0.1);
 }
 .produits-cats {
   display: flex;
@@ -606,13 +606,13 @@ body {
   text-transform: uppercase;
 }
 .cat-btn:hover {
-  border-color: #8e6db0;
-  color: #8e6db0;
+  border-color: #a07cc0;
+  color: #a07cc0;
   background: #fdf4ff;
 }
 .cat-btn.active {
-  background: #1e1030;
-  border-color: #1e1030;
+  background: #2d1f45;
+  border-color: #2d1f45;
   color: #fff;
 }
 .result-count {
@@ -627,8 +627,8 @@ body {
   background: #fff;
   border-radius: 12px;
   padding: 3rem 2rem;
-  box-shadow: 0 10px 50px rgba(142,109,176,0.12);
-  border-top: 4px solid #8e6db0;
+  box-shadow: 0 10px 50px rgba(160,124,192,0.12);
+  border-top: 4px solid #a07cc0;
 }
 .confirmation-icon {
   font-size: 4rem;
@@ -644,7 +644,7 @@ body {
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
   font-style: italic;
-  color: #1e1030;
+  color: #2d1f45;
   margin-bottom: 8px;
 }
 .confirmation-sub {
@@ -678,7 +678,7 @@ body {
 }
 .confirmation-value {
   font-weight: 500;
-  color: #1e1030;
+  color: #2d1f45;
   text-align: right;
 }
 .confirmation-notice {
@@ -688,7 +688,7 @@ body {
   font-size: 13px;
   color: #6a1b9a;
   margin-bottom: 1.5rem;
-  border-left: 4px solid #8e6db0;
+  border-left: 4px solid #a07cc0;
 }
 .confirmation-contact {
   margin-bottom: 1.5rem;
@@ -704,10 +704,10 @@ body {
   margin: 4px;
 }
 .btn-confirm-contact {
-  background: #1e1030;
+  background: #2d1f45;
   color: #fff;
 }
-.btn-confirm-contact:hover { background: #8e6db0; color: #fff; }
+.btn-confirm-contact:hover { background: #a07cc0; color: #fff; }
 .btn-confirm-wa {
   background: #25D366;
   color: #fff;
@@ -718,8 +718,8 @@ body {
   align-items: center;
   padding: 12px 28px;
   background: transparent;
-  border: 1.5px solid #1e1030;
-  color: #1e1030;
+  border: 1.5px solid #2d1f45;
+  color: #2d1f45;
   border-radius: 0;
   font-size: 11px;
   letter-spacing: 2px;
@@ -729,7 +729,7 @@ body {
   font-family: 'Jost', sans-serif;
 }
 .btn-back-home:hover {
-  background: #1e1030;
+  background: #2d1f45;
   color: #fff;
 }
 
@@ -898,8 +898,8 @@ html, body {
   50%       { transform: translateY(-12px); }
 }
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(142,109,176,0.4); }
-  50%       { box-shadow: 0 0 0 18px rgba(142,109,176,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(160,124,192,0.4); }
+  50%       { box-shadow: 0 0 0 18px rgba(160,124,192,0); }
 }
 @keyframes sparkle {
   0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
@@ -962,19 +962,19 @@ html, body {
 }
 
 .brand-name {
-  background: linear-gradient(135deg, #1e1030 0%, #6b4880 50%, #1e1030 100%);
+  background: linear-gradient(135deg, #2d1f45 0%, #8860a8 50%, #2d1f45 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 4s linear infinite;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(107,72,128,0.3));
+  filter: drop-shadow(0 2px 4px rgba(136,96,168,0.3));
 }
 
 .brand-name:hover {
   animation: shimmer 1.5s linear infinite;
-  filter: drop-shadow(0 4px 12px rgba(107,72,128,0.6));
+  filter: drop-shadow(0 4px 12px rgba(136,96,168,0.6));
 }
 
 .brand-sub {
@@ -1000,7 +1000,7 @@ html, body {
   gap: 12px;
   background: rgba(255,255,255,0.08);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(142,109,176,0.5);
+  border: 1px solid rgba(160,124,192,0.5);
   border-radius: 50px;
   padding: 8px 24px;
   color: #fff;
@@ -1079,12 +1079,13 @@ html, body {
    ═══════════════════════════════════════════════════ */
 
 .khoyane-brand-strip {
-  background: linear-gradient(135deg, #1e1030 0%, #6b4880 40%, #d4187f 70%, #1e1030 100%);
+  background: linear-gradient(135deg, #2d1f45 0%, #8860a8 40%, #c94d9a 70%, #2d1f45 100%);
   background-size: 300% 300%;
   animation: gradientShift 6s ease infinite;
-  padding: 14px 0;
+  padding: 12px 0;
   overflow: hidden;
   position: relative;
+  width: 100%;
 }
 
 .khoyane-brand-strip::before {
@@ -1099,38 +1100,51 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 16px;
   color: #fff;
   white-space: nowrap;
+  overflow: hidden;
+  padding: 0 16px;
 }
 
 .khoyane-strip-logo {
   font-family: 'Pinyon Script', cursive;
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   line-height: 1;
   animation: heartbeat 3s ease-in-out infinite;
   text-shadow: 0 2px 15px rgba(255,255,255,0.4);
+  flex-shrink: 0;
 }
 
 .khoyane-strip-sub {
-  font-size: 10px;
-  letter-spacing: 5px;
+  font-size: 9px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   font-family: 'Jost', sans-serif;
   opacity: 0.85;
+  flex-shrink: 0;
 }
 
 .khoyane-strip-divider {
   color: rgba(255,255,255,0.4);
-  font-size: 1.2rem;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .khoyane-strip-tagline {
-  font-size: 11px;
-  letter-spacing: 2px;
+  font-size: 10px;
+  letter-spacing: 1px;
   font-style: italic;
   opacity: 0.8;
   font-family: 'Cormorant Garamond', serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .khoyane-strip-tagline { display: none; }
+  .khoyane-strip-content { gap: 12px; }
+  .khoyane-strip-logo { font-size: 1.5rem; }
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1165,7 +1179,7 @@ html, body {
 }
 .service-icon-card:hover {
   transform: translateY(-10px) scale(1.03) !important;
-  box-shadow: 0 20px 50px rgba(142,109,176,0.2) !important;
+  box-shadow: 0 20px 50px rgba(160,124,192,0.2) !important;
 }
 
 .service-icon-circle {
@@ -1174,7 +1188,7 @@ html, body {
 .service-icon-card:hover .service-icon-circle {
   background: linear-gradient(135deg, var(--gold), var(--rose)) !important;
   transform: rotate(15deg) scale(1.15);
-  box-shadow: 0 8px 25px rgba(212,24,127,0.4);
+  box-shadow: 0 8px 25px rgba(201,77,154,0.4);
 }
 .service-icon-card:hover .service-icon-circle i {
   color: #fff !important;
@@ -1206,7 +1220,7 @@ html, body {
 }
 .testimonial-card:hover {
   transform: translateY(-8px) !important;
-  box-shadow: 0 15px 40px rgba(142,109,176,0.15) !important;
+  box-shadow: 0 15px 40px rgba(160,124,192,0.15) !important;
 }
 
 /* ── Blog cards hover ── */
@@ -1231,7 +1245,7 @@ html, body {
   border-radius: 4px;
 }
 .tarif-row:hover {
-  background: linear-gradient(90deg, rgba(142,109,176,0.06), transparent);
+  background: linear-gradient(90deg, rgba(160,124,192,0.06), transparent);
   padding-left: 8px;
   transform: translateX(4px);
 }
@@ -1271,7 +1285,7 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #1e1030, #6b4880);
+  background: linear-gradient(135deg, #2d1f45, #8860a8);
   color: #fff;
   padding: 10px 20px;
   border-radius: 50px;
@@ -1293,7 +1307,7 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(135deg, rgba(30,16,48,0.9), rgba(107,72,128,0.85));
+  background: linear-gradient(135deg, rgba(45,31,69,0.9), rgba(136,96,168,0.85));
   color: #fff;
   padding: 12px 16px;
   text-align: center;
@@ -1412,7 +1426,7 @@ html, body {
 #page-loader {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, #1e1030, #6b4880);
+  background: linear-gradient(135deg, #2d1f45, #8860a8);
   z-index: 99999;
   display: flex;
   flex-direction: column;
@@ -1429,7 +1443,7 @@ html, body {
   font-size: 4rem;
   color: #fff;
   animation: float 2s ease-in-out infinite;
-  text-shadow: 0 4px 20px rgba(142,109,176,0.6);
+  text-shadow: 0 4px 20px rgba(160,124,192,0.6);
 }
 .loader-sub {
   font-size: 10px;
@@ -1477,7 +1491,7 @@ html, body {
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(142,109,176,0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(160,124,192,0.3) 0%, transparent 70%);
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   animation: loaderPulse 2s ease-in-out infinite;
@@ -1487,8 +1501,8 @@ html, body {
   position: absolute;
   inset: 0;
   background: 
-    radial-gradient(ellipse at 20% 80%, rgba(212,24,127,0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(142,109,176,0.2) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 80%, rgba(201,77,154,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(160,124,192,0.2) 0%, transparent 50%);
 }
 
 @keyframes loaderPulse {
@@ -1499,7 +1513,7 @@ html, body {
 .loader-brand {
   font-size: 5rem;
   animation: loaderBrandIn 1s cubic-bezier(0.16, 1, 0.3, 1) both, float 2s ease-in-out 1s infinite;
-  text-shadow: 0 0 60px rgba(142,109,176,0.8), 0 4px 20px rgba(142,109,176,0.4);
+  text-shadow: 0 0 60px rgba(160,124,192,0.8), 0 4px 20px rgba(160,124,192,0.4);
   position: relative;
   z-index: 2;
 }
@@ -1569,7 +1583,7 @@ html, body {
   left: -60%;
   width: 80%;
   height: 250%;
-  background: linear-gradient(105deg, transparent, rgba(142,109,176,0.07), transparent);
+  background: linear-gradient(105deg, transparent, rgba(160,124,192,0.07), transparent);
   transform: rotate(10deg);
   transition: all 0.7s ease;
   pointer-events: none;
@@ -1715,7 +1729,7 @@ html, body {
 .hero-floating-gem {
   position: absolute;
   width: 8px; height: 8px;
-  background: linear-gradient(135deg, var(--gold), rgba(142,109,176,0.6));
+  background: linear-gradient(135deg, var(--gold), rgba(160,124,192,0.6));
   transform: rotate(45deg);
   pointer-events: none;
   animation: gemFloat var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
@@ -1735,12 +1749,12 @@ html, body {
 
 /* ── Glow effect on service price ── */
 .service-price-glow {
-  text-shadow: 0 0 20px rgba(142,109,176,0.3);
+  text-shadow: 0 0 20px rgba(160,124,192,0.3);
   animation: priceGlow 3s ease-in-out infinite;
 }
 @keyframes priceGlow {
-  0%, 100% { text-shadow: 0 0 10px rgba(142,109,176,0.2); }
-  50% { text-shadow: 0 0 25px rgba(142,109,176,0.5), 0 0 40px rgba(212,24,127,0.2); }
+  0%, 100% { text-shadow: 0 0 10px rgba(160,124,192,0.2); }
+  50% { text-shadow: 0 0 25px rgba(160,124,192,0.5), 0 0 40px rgba(201,77,154,0.2); }
 }
 
 /* ── SYSTÈME DE REMISES ── */
@@ -1748,7 +1762,7 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: linear-gradient(135deg, #d4187f, #8e6db0);
+  background: linear-gradient(135deg, #c94d9a, #a07cc0);
   color: #fff;
   font-size: 10px;
   font-weight: 600;
@@ -1758,8 +1772,8 @@ html, body {
   animation: remisePulse 2s ease-in-out infinite;
 }
 @keyframes remisePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212,24,127,0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(212,24,127,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,77,154,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(201,77,154,0); }
 }
 
 .prix-original {
@@ -1775,7 +1789,7 @@ html, body {
 }
 
 .promo-banner {
-  background: linear-gradient(90deg, #1e1030, #6b4880, #d4187f, #6b4880, #1e1030);
+  background: linear-gradient(90deg, #2d1f45, #8860a8, #c94d9a, #8860a8, #2d1f45);
   background-size: 300%;
   animation: promoBannerScroll 5s linear infinite;
   color: #fff;
@@ -1793,7 +1807,7 @@ html, body {
 /* ── Admin remises styles ── */
 .remise-form-card {
   background: linear-gradient(135deg, #fdf0fb, #f3e5f5);
-  border: 1px solid rgba(142,109,176,0.2);
+  border: 1px solid rgba(160,124,192,0.2);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1rem;
@@ -1826,13 +1840,13 @@ html, body {
   position: fixed;
   bottom: 100px;
   right: 24px;
-  background: linear-gradient(135deg, #1e1030, #6b4880);
+  background: linear-gradient(135deg, #2d1f45, #8860a8);
   color: #fff;
   padding: 14px 24px;
   border-radius: 12px;
   font-size: 13px;
   z-index: 9999;
-  box-shadow: 0 8px 30px rgba(30,16,48,0.3);
+  box-shadow: 0 8px 30px rgba(45,31,69,0.3);
   transform: translateX(120%);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

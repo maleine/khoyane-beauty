@@ -28,17 +28,17 @@
   </script>
   <style>
     body { font-family: 'Jost', sans-serif; background: #f8f5f0; }
-    .admin-sidebar { width: 260px; min-height: 100vh; background: #1e1030; position: fixed; left: 0; top: 0; z-index: 1000; }
+    .admin-sidebar { width: 260px; min-height: 100vh; background: #2d1f45; position: fixed; left: 0; top: 0; z-index: 1000; }
     .admin-content { margin-left: 260px; min-height: 100vh; }
     .sidebar-brand { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
     .sidebar-brand-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: #fff; letter-spacing: 3px; font-style: italic; }
-    .sidebar-brand-sub { font-size: 0.6rem; color: #8e6db0; letter-spacing: 5px; display: block; text-transform: uppercase; }
+    .sidebar-brand-sub { font-size: 0.6rem; color: #a07cc0; letter-spacing: 5px; display: block; text-transform: uppercase; }
     .sidebar-nav .nav-link { color: #aaa; padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 10px; transition: all 0.2s; font-size: 0.82rem; letter-spacing: 0.5px; }
-    .sidebar-nav .nav-link:hover, .sidebar-nav .nav-link.active { color: #fff; background: rgba(142,109,176,0.18); border-left: 3px solid #8e6db0; }
+    .sidebar-nav .nav-link:hover, .sidebar-nav .nav-link.active { color: #fff; background: rgba(160,124,192,0.18); border-left: 3px solid #a07cc0; }
     .sidebar-nav .nav-link i { width: 18px; }
     .admin-topbar { background: #fff; padding: 1rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-    .stat-card { background: #fff; border-radius: 8px; padding: 1.25rem; border-left: 4px solid #8e6db0; }
-    .stat-card .stat-val { font-size: 2rem; font-weight: 400; color: #1e1030; font-family: 'Playfair Display', serif; }
+    .stat-card { background: #fff; border-radius: 8px; padding: 1.25rem; border-left: 4px solid #a07cc0; }
+    .stat-card .stat-val { font-size: 2rem; font-weight: 400; color: #2d1f45; font-family: 'Playfair Display', serif; }
     .stat-card .stat-lbl { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
     @media(max-width:768px) { .admin-sidebar{display:none;} .admin-content{margin-left:0;} }
   </style>
@@ -64,7 +64,7 @@
     </a>
     <a href="/admin/commandes" class="nav-link <%= currentPath.includes('/admin/commandes') ? 'active' : '' %>">
       <i class="bi bi-bag-check"></i> Commandes
-      <span id="sidebarCommandesBadge" style="display:none;margin-left:auto;background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff;border-radius:20px;font-size:10px;padding:1px 7px;">0</span>
+      <span id="sidebarCommandesBadge" style="display:none;margin-left:auto;background:linear-gradient(135deg,#c94d9a,#a07cc0);color:#fff;border-radius:20px;font-size:10px;padding:1px 7px;">0</span>
     </a>
     <a href="/admin/services" class="nav-link <%= currentPath.includes('/admin/services') ? 'active' : '' %>">
       <i class="bi bi-scissors"></i> Services
@@ -77,7 +77,7 @@
     </a>
     <a href="/admin/promos" class="nav-link <%= currentPath.includes('/admin/promos') ? 'active' : '' %>">
       <i class="bi bi-tag-fill"></i> Remises &amp; Promos
-      <span style="background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;letter-spacing:0;">NEW</span>
+      <span style="background:linear-gradient(135deg,#c94d9a,#a07cc0);color:#fff;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;letter-spacing:0;">NEW</span>
     </a>
     <a href="/admin/notifications" class="nav-link <%= currentPath.includes('/admin/notifications') ? 'active' : '' %>">
       <i class="bi bi-bell-fill"></i> Notifications
@@ -96,7 +96,7 @@
       <!-- Cloche notifications temps réel -->
       <div style="position:relative;cursor:pointer;" id="notifBellWrap" onclick="toggleNotifPanel()">
         <i class="bi bi-bell" id="notifBellIcon" style="font-size:1.2rem;color:#555;transition:color 0.2s;"></i>
-        <span id="notifBadge" style="display:none;position:absolute;top:-5px;right:-5px;background:linear-gradient(135deg,#d4187f,#8e6db0);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:bellPulse 1.5s ease-in-out infinite;">0</span>
+        <span id="notifBadge" style="display:none;position:absolute;top:-5px;right:-5px;background:linear-gradient(135deg,#c94d9a,#a07cc0);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:bellPulse 1.5s ease-in-out infinite;">0</span>
       </div>
 
       <!-- Lien paramètres notifs -->
@@ -114,8 +114,8 @@
   </div>
 
   <!-- Panneau notifications -->
-  <div id="notifPanel" style="display:none;position:fixed;top:70px;right:20px;width:340px;background:#fff;border-radius:12px;box-shadow:0 8px 40px rgba(30,16,48,0.18);z-index:1000;overflow:hidden;animation:slideDownPanel 0.25s cubic-bezier(0.16,1,0.3,1);">
-    <div style="padding:16px 20px;background:linear-gradient(135deg,#1e1030,#6b4880);color:#fff;display:flex;justify-content:space-between;align-items:center;">
+  <div id="notifPanel" style="display:none;position:fixed;top:70px;right:20px;width:340px;background:#fff;border-radius:12px;box-shadow:0 8px 40px rgba(45,31,69,0.18);z-index:1000;overflow:hidden;animation:slideDownPanel 0.25s cubic-bezier(0.16,1,0.3,1);">
+    <div style="padding:16px 20px;background:linear-gradient(135deg,#2d1f45,#8860a8);color:#fff;display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:13px;font-weight:600;letter-spacing:1px;">🔔 Nouvelles réservations</span>
       <button onclick="toggleNotifPanel()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:16px;cursor:pointer;line-height:1;">×</button>
     </div>
@@ -126,7 +126,7 @@
       </div>
     </div>
     <div style="padding:12px 20px;border-top:1px solid #f0e6f6;text-align:center;">
-      <a href="/admin/reservations" style="font-size:12px;color:#8e6db0;text-decoration:none;font-weight:600;letter-spacing:1px;">Voir toutes les réservations →</a>
+      <a href="/admin/reservations" style="font-size:12px;color:#a07cc0;text-decoration:none;font-weight:600;letter-spacing:1px;">Voir toutes les réservations →</a>
     </div>
   </div>
 
@@ -174,7 +174,7 @@
 
         // Animation cloche
         const bell = document.getElementById('notifBellIcon');
-        bell.style.color = '#d4187f';
+        bell.style.color = '#c94d9a';
         bell.style.animation = 'bellShake 0.6s ease';
         setTimeout(() => { bell.style.animation = ''; }, 700);
 
@@ -190,11 +190,11 @@
           div.innerHTML = `
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
               <div>
-                <div style="font-size:13px;font-weight:600;color:#1e1030;">${r.prenom} ${r.nom}</div>
-                <div style="font-size:11px;color:#8e6db0;margin-top:2px;">${r.service_nom || 'Service non spécifié'}</div>
+                <div style="font-size:13px;font-weight:600;color:#2d1f45;">${r.prenom} ${r.nom}</div>
+                <div style="font-size:11px;color:#a07cc0;margin-top:2px;">${r.service_nom || 'Service non spécifié'}</div>
                 <div style="font-size:11px;color:#aaa;margin-top:2px;">📅 ${new Date(r.date_rdv).toLocaleDateString('fr-FR')} à ${r.heure_rdv} · 📞 ${r.telephone}</div>
               </div>
-              <span style="background:#fdf0f5;color:#d4187f;font-size:9px;padding:3px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0;">Nouveau</span>
+              <span style="background:#fdf0f5;color:#c94d9a;font-size:9px;padding:3px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0;">Nouveau</span>
             </div>
           `;
           list.appendChild(div);

@@ -103,7 +103,7 @@
             <td>
               <% if (c.detail_items) { %>
                 <% c.detail_items.split(' · ').forEach(function(item) { %>
-                  <span class="badge" style="background:#f3eeff;color:#6b4880;font-weight:500;font-size:11px;margin:1px 2px;padding:4px 8px;border-radius:6px;"><%= item %></span>
+                  <span class="badge" style="background:#f3eeff;color:#8860a8;font-weight:500;font-size:11px;margin:1px 2px;padding:4px 8px;border-radius:6px;"><%= item %></span>
                 <% }) %>
               <% } else { %>
                 <span class="text-muted" style="font-size:12px;">—</span>
@@ -114,14 +114,14 @@
               <% const payLabels = {especes:'Espèces',wave:'Wave',orange_money:'Orange Money',virement:'Virement'}; %>
               <small><%= payIcons[c.mode_paiement] || '' %> <%= payLabels[c.mode_paiement] || c.mode_paiement %></small>
             </td>
-            <td><strong style="color:#1e1030;"><%= Number(c.montant_total).toLocaleString('fr-FR') %> F</strong></td>
+            <td><strong style="color:#2d1f45;"><%= Number(c.montant_total).toLocaleString('fr-FR') %> F</strong></td>
             <td>
               <% if (c.statut === 'livree') { %>
                 <span class="badge bg-success">Livrée</span>
               <% } else if (c.statut === 'payee') { %>
                 <span class="badge bg-primary">Payée</span>
               <% } else if (c.statut === 'confirmee') { %>
-                <span class="badge" style="background:#d4187f;color:#fff;">Confirmée</span>
+                <span class="badge" style="background:#c94d9a;color:#fff;">Confirmée</span>
               <% } else if (c.statut === 'annulee') { %>
                 <span class="badge bg-danger">Annulée</span>
               <% } else { %>
